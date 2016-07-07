@@ -9,43 +9,13 @@
       "stage-0"
     ]
   },
-  "ava": {
-    "files": [
-      "test/**/*.test.js",
-      "!test/__lib__/**/*"
-    ],
-    "source": [
-      "**/*.{js,jsx,es}",
-      "!build/**/*"
-    ],
-    "require": [
-      "babel-register",
-      "babel-polyfill",
-      "should",
-      "should-http"
-    ],
-    "babel": "inherit"
-  },
-  "nyc": {
-    "extension": [
-      ".jsx",
-      ".es"
-    ]
-  },
   "scripts": {
     "start": "export NODE_ENV=production && npm run build && node build/index.js",
-    "staging": "export NODE_ENV=staging && npm run build && node build/index.js",
     "production": "export NODE_ENV=production && npm run build && node build/index.js",
     "test": "export NODE_ENV=test && npm run db:rollback && npm run db:setup && nyc ava",
-    "test:report": "nyc report --reporter=lcov",
     "build": "babel -d build/ src/",
     "apidoc": "gulp apidoc",
-    "dev:server": "NODE_ENV=development && npm run build && node build/index.js",
-    "dev:apidoc": "gulp apidoc:watch",
-    "serve:apidoc": "http-server ./docs",
-    "serve:coverage": "http-server ./coverage/lcov-report",
-    "babel": "babel-node",
-    "nyc": "nyc"
+    "dev:server": "NODE_ENV=development && npm run build && node build/index.js"
   },
   "repository": {
     "type": "git",
@@ -82,15 +52,6 @@
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.9.0",
     "gulp": "^3.9.1",
-    "gulp-apidoc": "^0.2.4",
-    "istanbul": "^1.0.0-alpha",
-    "ava": "^0.15.1",
-    "ava-spec": "^1.0.0",
-    "nyc": "^6.4.4",
-    "nodemon": "^1.9.2",
-    "should": "^8.3.2",
-    "should-http": "0.0.4",
-    "supertest": "^1.2.0",
-    "supertest-as-promised": "^3.1.0"
+    "gulp-apidoc": "^0.2.4"
   }
 }
