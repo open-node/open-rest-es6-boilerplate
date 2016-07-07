@@ -1,0 +1,23 @@
+#!/usr/bin/env node
+
+var exec = require('exec');
+var db = require('../build/app/configs').default.db;
+
+tableFile = __dirname + '/../src/app/configs/table.sql';
+
+exec([
+  [
+    "mysqldump",
+    "-h"  + db.host,
+    "-u"  + db.user,
+    "-p'" + db.pass +"'",
+    "-P"  + db.port,
+    "-d " + db.name,
+    "> "  + tableFile
+  ].join(' '),
+  "sed -i -e 's/ AUTO_INCREMENT=[0-9]\+//' " + tableFile
+].join(' && '), (error, stdout, code) => {
+  if (error instanceof Error) return console.error(error);
+  if (stdout) process.stdout.write(stdout);
+  if (error) process.stderr.write(error);
+});

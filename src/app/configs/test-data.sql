@@ -1,0 +1,1 @@
+INSERT INTO `user` (`id`, `name`, `email`, `password`, `salt`, `role`, `isDelete`, `createdAt`, `updatedAt`) VALUES (1, 'Redstone Zhao', '13740080@qq.com', '875b1f58dc5d2f6f04190de56511273f', 'GVA1K8Ga5D', 'admin', 'no', NOW(), NOW());
