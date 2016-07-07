@@ -71,7 +71,7 @@
     "glob": "^7.0.3",
     "moment": "^2.13.0",
     "open-cache": "^0.3.1",
-    "open-rest": "6.0.8",
+    "open-rest": "6.0.9",
     "open-rest-access-log": "^0.1.0",
     "underscore": "^1.8.3"
   },
