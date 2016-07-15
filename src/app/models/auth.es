@@ -68,7 +68,7 @@ export default (sequelize) => {
     freezeTableName: true,
     instanceMethods: {},
     classMethods: {
-      findByToken: (token) => {
+      findByToken: function(token) {
         /** 常规模式，到 auth 表根据 token 查询 */
         if (!(U.isApiTest && (token.substr(0, 6) === 'MOCK::'))) {
           return this.findOne({
@@ -81,23 +81,23 @@ export default (sequelize) => {
 
         /** 用户信息的mock, 方便apitest模式下对各种身份用户的mock */
         return new Promise((reslove, reject) => {
-          U.model('user').findById(token.substr(6).then((user) => {
+          U.model('user').findById(token.substr(6)).then((user) => {
             if (!user) return reject(USER_NO_EXISTS);
             if (user.status === 'disabled') return reject(USER_NO_EXISTS);
             if (user.isDelete === 'yes') return reject(USER_NO_EXISTS);
             reslove(Auth.generator(user, '127.0.0.1'));
-          }).catch(reject));
+          }).catch(reject);
         });
       },
 
       /** 让这个函数具有cache的能力,减少对token和user表的读取 */
       readUserByToken: readUserByToken,
-      addAuth: (user, onlineIp, callback) => {
+      addAuth: function(user, onlineIp, callback) {
         U.callback(Auth.generator(user, onlineIp), callback);
       },
 
       /** 生成一条新的数据 */
-      generator: (user, onlineIp) => {
+      generator: function(user, onlineIp) {
         return Auth.create({
           token: U.randStr(32),
           refreshToken: U.randStr(32),
@@ -109,7 +109,7 @@ export default (sequelize) => {
     },
 
     hooks: {
-      afterDestroy: (auth) => {
+      afterDestroy: function(auth) {
         /** 清楚cache，这样禁用用户，或者修改密码后可以使得之前的token立即失效 */
         if (Auth.readUserByToken.removeKey) {
           Auth.readUserByToken.removeKey(auth.token, U.noop);

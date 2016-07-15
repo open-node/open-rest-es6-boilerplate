@@ -2,7 +2,7 @@ import U from '../lib/utils';
 import config from '../configs';
 
 const sayHi = (name, service, ip, now) => {
-  "Hello #{name}, This is #{service}, Your ip: #{ip}, Now: #{now}."
+  return "Hello " + name + ", This is " + service + ", Your ip: " + ip + ", Now: " + now + ".";
 };
 
 const service = config.service.name;

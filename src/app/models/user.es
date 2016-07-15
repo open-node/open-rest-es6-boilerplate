@@ -26,7 +26,7 @@ module.exports = (sequelize) => {
     name: {
       type: Sequelize.STRING(30),
       allowNull: false,
-      set: (val) => {
+      set: function(val) {
         this.setDataValue('name', U.nt2space(val))
       },
       validate: {
@@ -39,11 +39,11 @@ module.exports = (sequelize) => {
       validate: {
         len: [1, 255]
       },
-      get: () => {
+      get: function() {
         if (!this.getDataValue('avatar')) return null;
         return `${AVATAR_ROOT}/${this.getDataValue('avatar')}`
       },
-      set: (val) => {
+      set: function(val) {
         var image, val, origFile, filepath;
         image = U.decodeBase64Image(val);
         if (!image) return;
@@ -131,15 +131,15 @@ module.exports = (sequelize) => {
 
     instanceMethods: {
       /** 这里之所以要单独定义 toJSON 是为了隐藏 salt 和 password 对外 */
-      toJSON: () => {
+      toJSON: function() {
         return U._.omit(this.get(), 'password', 'salt');
       },
 
-      calcPass: (password) => {
+      calcPass: function(password) {
         return U.md5(`${this.salt}${U.md5(password)}${this.salt}`);
       },
 
-      checkPass: (password) => {
+      checkPass: function(password) {
         return this.calcPass(password) === this.password;
       }
     },

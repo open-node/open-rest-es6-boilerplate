@@ -1,3 +1,5 @@
+#! /usr/bin/env node
+
 import U from './app/lib/utils';
 import config from './app/configs';
 

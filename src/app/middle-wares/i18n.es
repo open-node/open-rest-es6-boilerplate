@@ -18,7 +18,7 @@ export default (languages, defaultLanguage) => {
   const LANGS = U.getModules(`${__dirname}/../locale`, ['json']);
   return (req, res, next) => {
     req._locale = defaultLanguage;
-    for (x of locales) {
+    for (let x of locales) {
       let v = req[x[0]][x[1]];
       if (x[2]) v = x[2](v);
       if (languages.indexOf(v) < 0) continue;
@@ -28,9 +28,9 @@ export default (languages, defaultLanguage) => {
 
     /** 改写默认的 res.send 为了处理 message */
     var send = res.send;
-    res.send = (code, body, headers) => {
+    res.send = function (code, body, headers) {
       var error, t, translate;
-      if(!arguments.length) return send.apply(res, arguments);
+      if (!arguments.length) return send.apply(res, arguments);
       if (typeof code !== 'number') body = code;
       if (!(body instanceof Error)) return send.apply(res, arguments);
       error = body.body;
@@ -57,6 +57,6 @@ export default (languages, defaultLanguage) => {
       return send.apply(res, arguments);
     };
 
-    return next()
+    return next();
   };
 };

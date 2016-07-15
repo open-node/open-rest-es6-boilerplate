@@ -8,7 +8,7 @@ import U      from '../../lib/utils';
 
 /** 检测当前用户是否为管理员 */
 export const sysAdmin = (error) => {
-  if (!error instanceof Error) error = errors.notFound(error);
+  if (!(error instanceof Error)) error = errors.notFound(error);
   return (req, res, next) => {
     if (req.isAdmin === true) return next();
     return next(error);

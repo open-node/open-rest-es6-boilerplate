@@ -1,15 +1,14 @@
-
 /** 返回 i18n 对象 */
-export default (languages, locale, locales) => {
+export default function (languages, locale, locales) {
   var langs;
   locale = (languages.indexOf(locale) > -1) ? locale : languages[0];
-  langs = locales[locale];
+  langs = locales[locale] || {};
   return {
     /**
      * key "nihao {0}, Today is {1}"
      * i18n.t key, 'zhaoxiongfei', '星期三'
      */
-    t: (key) => {
+    t: function(key) {
       var result, args;
       args = 2 <= arguments.length ? [].slice.call(arguments, 1) : [];
       if (!key) return;
