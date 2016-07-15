@@ -72,7 +72,7 @@ export default {
   },
 
   /** accessLog 路径 */
-  accessLog: `${__dirname}/../../access.log`,
+  accessLog: `${__dirname}/../../../access.log`,
 
   /** 允许游客访问的路由路径 */
   allowGuestAccessPaths: [

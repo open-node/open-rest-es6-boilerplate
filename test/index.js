@@ -42,7 +42,7 @@ var exec = function(cmd, callback) {
 };
 
 var testBeforeCmds = [
-  "npm install"
+  "echo 'Testing started at: " + new Date + "'"
 ].join(" && ")
 
 exec(testBeforeCmds, function(error, code) {
