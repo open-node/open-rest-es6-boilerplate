@@ -93,7 +93,7 @@ cases = [{
   };
 }, {
   name: '测试用户的登陆, 密码错误',
-  uri: '/session',
+  uri: '/session?_locale=en',
   verb: 'post',
   headers: {
     'X-Real-IP': '199.199.0.199'
@@ -111,7 +111,7 @@ cases = [{
   }
 }, {
   name: '测试用户的登陆, 用户不存在',
-  uri: '/session',
+  uri: '/session?_locale=en',
   verb: 'post',
   headers: {
     'X-Real-IP': '199.199.0.199'
@@ -125,6 +125,24 @@ cases = [{
     JSON: {
       code: "NotAuthorized",
       message: "Password or Email error."
+    }
+  }
+}, {
+  name: '测试用户的登陆, 用户不存在',
+  uri: '/session?_locale=zh',
+  verb: 'post',
+  headers: {
+    'X-Real-IP': '199.199.0.199'
+  },
+  data: {
+    email: '13740090@qq.com',
+    password: '123456abc'
+  },
+  expects: {
+    Status: 403,
+    JSON: {
+      code: "NotAuthorized",
+      message: "账号或密码错误。"
     }
   }
 }, {

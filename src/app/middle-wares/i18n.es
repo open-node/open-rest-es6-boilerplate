@@ -15,7 +15,7 @@ const locales = [
 ];
 
 export default (languages, defaultLanguage) => {
-  const LANGS = U.getModules(`${__dirname}/../locale`, ['json']);
+  const LANGS = U.getModules(`${__dirname}/../../../locale`, ['json']);
   return (req, res, next) => {
     req._locale = defaultLanguage;
     for (let x of locales) {

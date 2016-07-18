@@ -1,0 +1,23 @@
+#: src/app/models/auth.es:5
+msgid "Token error."
+msgstr "Token 错误。"
+
+#: src/app/models/auth.es:6
+msgid "User dont exists."
+msgstr "用户不存在"
+
+#: src/app/models/auth.es:7 src/app/models/user.es:7
+msgid "User had disabled."
+msgstr "用户被禁用。"
+
+#: src/app/models/auth.es:8 src/app/models/user.es:8
+msgid "User had deleted."
+msgstr "用户被删除。"
+
+#: src/app/models/auth.es:28
+msgid "readUserByToken cached faild"
+msgstr "获取用户失败。"
+
+#: src/app/models/user.es:6
+msgid "Password or Email error."
+msgstr "账号或密码错误。"
