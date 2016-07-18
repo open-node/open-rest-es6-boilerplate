@@ -18,6 +18,12 @@ prompt.start();
 //
 var schema = {
   properties: {
+    "service.port": {
+      description: "REST API service port",
+      validator: /\d+/,
+      default: config.service.port,
+      required: true
+    },
     "db.host": {
       description: "MySQL server address",
       message: "db.host must be required",
