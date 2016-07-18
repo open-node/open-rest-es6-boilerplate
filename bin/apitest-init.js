@@ -19,7 +19,7 @@ U.cached.flush('*', function(error) {
     console.error(error, error.stack);
     return process.exit(0);
   }
-  exec(command, function(error , stdout, stderr) {
+  exec(command, function(error, stdout, stderr) {
     if (error) throw error;
     if (stdout) console.log(stdout);
     if (stderr) console.error(stderr);

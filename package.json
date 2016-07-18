@@ -16,7 +16,8 @@
     "locale:read": "find ./src/app -type f | node_modules/.bin/open-i18n read > bin/locale/application.pot && msgmerge -UN --no-wrap ./bin/locale/en.po ./bin/locale/application.pot && msgmerge -UN --no-wrap ./bin/locale/zh.po ./bin/locale/application.pot",
     "locale:write": "./bin/write.js ./bin/locale/zh.po zh && ./bin/write.js ./bin/locale/en.po en",
     "apidoc": "gulp apidoc",
-    "start": "NODE_ENV=development && npm run build && node build/index.js"
+    "start": "NODE_ENV=development && npm run build && node build/index.js",
+    "setup": "npm install && npm run build && ./bin/setup"
   },
   "repository": {
     "type": "git",
@@ -47,6 +48,7 @@
     "open-i18n": "^0.1.0",
     "open-rest": "6.0.11",
     "open-rest-access-log": "^0.1.0",
+    "prompt": "^1.0.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {

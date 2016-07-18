@@ -1,0 +1,181 @@
+#! /usr/bin/env node
+
+var prompt = require('prompt');
+var fs     = require('fs');
+var async  = require('async');
+var rest   = require('open-rest');
+var config = require('../build/app/configs/base').default;
+var exec  = require('child_process').exec;
+
+//
+// Start the prompt
+//
+prompt.start();
+
+//
+// Get two properties from the user: username and email
+//
+var schema = {
+  properties: {
+    "NODE_ENV": {
+      description: "NODE_ENV",
+      message: "NODE_ENV must be a string `apitest`, `development`, `production`",
+      default: process.env.NODE_ENV || 'development',
+      required: true
+    },
+    "db.host": {
+      description: "MySQL server address",
+      message: "db.host must be required",
+      default: config.db.host,
+      required: true
+    },
+    "db.port": {
+      description: "MySQL server port",
+      default: config.db.port,
+      message: "db.port must be a number",
+      required: true
+    },
+    "db.user": {
+      description: "MySQL server user",
+      default: config.db.user,
+      message: "db.user must be required",
+      required: true
+    },
+    "db.pass": {
+      description: "MySQL server password",
+      message: "db.pass must be required",
+      hidden: true,
+      required: true
+    },
+    "db.name": {
+      description: "MySQL database name, auto create",
+      default: config.db.name,
+      message: "db.pass must be required",
+      required: true
+    },
+    "cache.host": {
+      description: "Redis server address",
+      default: config.cache.host,
+      required: true
+    },
+    "cache.port": {
+      description: "Redis server port",
+      default: config.cache.port,
+      required: true
+    },
+    "cache.opts.namespace": {
+      description: "Redis server namespace",
+      default: config.cache.opts.namespace,
+      required: true
+    }
+  }
+};
+
+var getInputs = function(callback) {
+  prompt.get(schema, callback);
+};
+
+var confExists = function(setting, callback) {
+  var file = __dirname + '/../src/app/configs/config.' + result.NODE_ENV + '.es';
+  var schema = {
+  };
+  if (!fs.existsSync(file)) return callback(null, {conf: result, file: file});
+  prompt.get({
+    name: 'rewrite',
+    message: 'File `' + conf + '` already exists, to continue the operation will rewrite it. yes or no?',
+    validator: /y[es]*|n[o]?/,
+    warning: 'Must respond yes or no',
+    default: 'no'
+  }, function(err, result) {
+    if (err) return callback(err);
+    if (result.rewrite === 'no' || result.rewrite === 'n') return callback(Error('Config file already exists.'));
+    callback(null, setting);
+  });
+};
+
+var dbAuthCheck = function(setting, callback) {
+  var conf = setting.conf;
+  var url = 'mysql://' + conf['db.user'] + ':' + conf['db.pass'] + '@' + conf['db.host'] + ':' + conf['db.port']);
+  var sequelize = rest.Sequelize(url);
+  sequelize.authenticate().then(function(error) {
+    if (error) return callback(error);
+    sequelize.query('use ' + conf['db.name']).then(function() {
+      prompt.get({
+        name: 'dropdb',
+        message: 'db`' + conf['db.name'] + '` already exists, to continue the operation will drop it. yes or no?',
+        validator: /y[es]*|n[o]?/,
+        warning: 'Must respond yes or no',
+        default: 'no'
+      }, function(err, result) {
+        if (err) return callback(err);
+        if (result.dropdb === 'no' || result.dropdb === 'n') return callback(Error('Database already exists.'));
+        sequelize.query('DROP DATABASE IF EXISTS ' + conf['db.name']).then(function() {
+          setting.sequelize = sequelize;
+          callback(null, setting);
+        }).catch(callback);
+      });
+    }).catch(function(error) {
+      console.error(error)
+    });
+    callback(null, setting);
+  }).catch(callback);
+};
+
+var dbCreate = function(setting, callback) {
+  var conf = setting.conf;
+  var sql = 'CREATE DATABASE IF NOT EXISTS ' + conf['db.name'] + 'DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci';
+  setting.sequelize(sql).then(function() {
+    callback(null, setting);
+  }).catch(callback);
+};
+
+var tableCreate = function(setting, callback) {
+  var conf = setting.conf
+    , strfile = __dirname + "/../src/app/configs/table.sql"
+    , datafile = __dirname + "/../src/app/configs/test-data.sql";
+  var command = [
+    "mysql -h" + conf['db.host'] + " -u" + conf['db.user'] + " -P " + conf['db.port'] + " -p'" + conf['db.pass'] + "' " + conf['db.name'] + " < " + strfile,
+    "mysql -h" + conf['db.host'] + " -u" + conf['db.user'] + " -P " + conf['db.port'] + " -p'" + conf['db.pass'] + "' " + conf['db.name'] + " < " + datafile,
+  ].join('\n');
+  exec(command, function(error, stdout, stderr) {
+    if (error) return callback(error);
+    callback(null, setting);
+  });
+};
+
+var writeConf = function(setting, callback) {
+  var conf = setting.conf;
+  var contents = ["import config from './base';\n"];
+  for (var k in setting.conf) {
+    contents.push("config." + k + " = '" + conf[k] + "';");
+  }
+  contents.push("\nexport default config;");
+
+  try {
+    fs.writeFileSync(setting.file, contents.join('\n'));
+  } catch(e) {
+    return callback(e);
+  }
+  callback();
+};
+
+async.waterfall([
+  getInputs,
+  confExists,
+  dbAuthCheck,
+  dbCreate,
+  tableCreate,
+  writeConf
+], function (error) {
+  if (error) {
+    console.error(error.message);
+  } else {
+    console.log("Setup complete.");
+  }
+});
+
+prompt.get(schema, function (err, result) {
+  var conf = __dirname + '/../src/app/configs/config.' + result.NODE_ENV + '.es';
+  if (fs.existsSync(conf))
+  console.log('Command-line input received:', result);
+});

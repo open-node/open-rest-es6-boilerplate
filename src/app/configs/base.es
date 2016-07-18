@@ -19,19 +19,12 @@ export default {
   /** 数据库配置 */
   db: require('./extensions/db'),
 
-  /** 消息事件相关配置 */
-  event: {
-    host: '127.0.0.1',
-    port: 6379,
-    channel: 'Onote channel'
-  },
-
   /** cache 配置信息 */
   cache: {
     host: '127.0.0.1',
     port: 6379,
     opts: {
-      namespace: 'Jice'
+      namespace: 'ORB'
     }
   },
 
