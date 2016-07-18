@@ -1,6 +1,6 @@
 {
   "Token error.": "Token 错误。",
-  "User dont exists.": "用户不存在",
+  "User dont exists.": "用户不存在。",
   "User had disabled.": "用户被禁用。",
   "User had deleted.": "用户被删除。",
   "readUserByToken cached faild": "获取用户失败。",

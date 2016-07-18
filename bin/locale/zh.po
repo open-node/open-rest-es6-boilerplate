@@ -1,10 +1,25 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Open-rest-es6-boilerplate\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: Redston Zhao<13740080@qq.com>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 1.6.4\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
 #: src/app/models/auth.es:5
 msgid "Token error."
 msgstr "Token 错误。"
 
 #: src/app/models/auth.es:6
 msgid "User dont exists."
-msgstr "用户不存在"
+msgstr "用户不存在。"
 
 #: src/app/models/auth.es:7 src/app/models/user.es:7
 msgid "User had disabled."

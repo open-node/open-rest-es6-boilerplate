@@ -9,10 +9,12 @@
       "stage-0"
     ]
   },
+  "openI18n": {
+  },
   "scripts": {
     "test": "export NODE_ENV=apitest && npm install && npm run build && node ./test/index.js",
     "build": "babel -d build/ src/",
-    "locale:read": "find ./src/app -type f | ./bin/read.js > bin/locale/application.pot && msgmerge -UN --no-wrap ./bin/locale/en.po ./bin/locale/application.pot && msgmerge -UN --no-wrap ./bin/locale/zh.po ./bin/locale/application.pot",
+    "locale:read": "find ./src/app -type f | node_modules/.bin/open-i18n read > bin/locale/application.pot && msgmerge -UN --no-wrap ./bin/locale/en.po ./bin/locale/application.pot && msgmerge -UN --no-wrap ./bin/locale/zh.po ./bin/locale/application.pot",
     "locale:write": "./bin/write.js ./bin/locale/zh.po zh && ./bin/write.js ./bin/locale/en.po en",
     "apidoc": "gulp apidoc",
     "start": "NODE_ENV=development && npm run build && node build/index.js"
@@ -43,6 +45,7 @@
     "moment": "^2.13.0",
     "on-finished": "^2.3.0",
     "open-cache": "^0.3.1",
+    "open-i18n": "0.0.1",
     "open-rest": "6.0.11",
     "open-rest-access-log": "^0.1.0",
     "underscore": "^1.8.3"

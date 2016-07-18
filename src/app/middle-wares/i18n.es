@@ -1,5 +1,5 @@
 import U from '../lib/utils';
-import i18n from '../lib/i18n';
+import i18n from 'open-i18n';
 
 const locales = [
   ['params', '_locale'],

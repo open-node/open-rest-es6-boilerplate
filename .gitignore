@@ -2,6 +2,7 @@
 logs/*.log
 *.log
 npm-debug.log*
+*.po\~
 docs
 
 # Runtime data
