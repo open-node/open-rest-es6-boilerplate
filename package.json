@@ -9,8 +9,7 @@
       "stage-0"
     ]
   },
-  "openI18n": {
-  },
+  "openI18n": {},
   "scripts": {
     "test": "export NODE_ENV=apitest && npm install && npm run build && node ./test/index.js",
     "build": "babel -d build/ src/",
@@ -45,7 +44,7 @@
     "moment": "^2.13.0",
     "on-finished": "^2.3.0",
     "open-cache": "^0.3.1",
-    "open-i18n": "0.0.1",
+    "open-i18n": "^0.1.0",
     "open-rest": "6.0.11",
     "open-rest-access-log": "^0.1.0",
     "underscore": "^1.8.3"
