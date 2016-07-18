@@ -18,5 +18,11 @@
 - [x] [Mochajs](https://mochajs.org/)
 
 ## npm run *
-
+  * `build` Build application babel -d build/ src/
+  * `test` Run test unit case && api test case
+  * `apidoc` Make api docs, base on apidocs
+  * `start` Start rest api with development mode
+  * `locale:read` Collect language items
+  * `locale:write` Make language packages
+  * `setup` install config & db
 
