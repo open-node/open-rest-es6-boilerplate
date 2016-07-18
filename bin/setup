@@ -6,6 +6,7 @@ var async  = require('async');
 var rest   = require('open-rest');
 var config = require('../build/app/configs/base').default;
 var exec  = require('child_process').exec;
+var connection = null;
 
 //
 // Start the prompt
@@ -102,7 +103,7 @@ var confExists = function(setting, callback) {
 
 var dbAuthCheck = function(setting, callback) {
   var conf = setting.conf;
-  var connection = rest.mysql.createConnection({
+  connection = rest.mysql.createConnection({
     host: conf['db.host'],
     user: conf['db.user'],
     password: conf['db.pass']
@@ -112,9 +113,10 @@ var dbAuthCheck = function(setting, callback) {
   } catch(e) {
     return callback(e);
   }
+  setting.connection = connection;
   connection.query("USE " + conf['db.name'], function(err, rows, fields) {
     // DATABASE non-exists
-    if (err) return callback();
+    if (err) return callback(null, setting);
     // DATABASE already exists
     prompt.get({
       name: 'dropdb',
@@ -127,20 +129,19 @@ var dbAuthCheck = function(setting, callback) {
       if (result.dropdb === 'no' || result.dropdb === 'n') return callback(Error('Database already exists.'));
       connection.query('DROP DATABASE IF EXISTS ' + conf['db.name'], function(err, rows, fields) {
         if (err) return callback(err);
-        setting.connection = connection;
         callback(null, setting);
-      }).catch(callback);
+      });
     });
-  }).catch(callback);
+  })
 };
 
 var dbCreate = function(setting, callback) {
   var conf = setting.conf;
-  var sql = 'CREATE DATABASE IF NOT EXISTS ' + conf['db.name'] + 'DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci';
-  setting.connection(sql, function(err, rows, fields) {
+  var sql = 'CREATE DATABASE IF NOT EXISTS ' + conf['db.name'] + ' DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci';
+  setting.connection.query(sql, function(err, rows, fields) {
     if (err) return callback(err);
     callback(null, setting);
-  }).catch(callback);
+  })
 };
 
 var tableCreate = function(setting, callback) {
@@ -170,7 +171,7 @@ var writeConf = function(setting, callback) {
   } catch(e) {
     return callback(e);
   }
-  callback();
+  callback(null, setting);
 };
 
 async.waterfall([
@@ -182,7 +183,7 @@ async.waterfall([
   tableCreate,
   writeConf
 ], function (error, setting) {
-  if (setting.connection && setting.connection.end) setting.connection.end();
+  if (connection && connection.end) connection.end();
   if (error) {
     console.error(error.message);
   } else {
