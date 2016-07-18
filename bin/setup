@@ -17,12 +17,6 @@ prompt.start();
 //
 var schema = {
   properties: {
-    "NODE_ENV": {
-      description: "NODE_ENV",
-      message: "NODE_ENV must be a string `apitest`, `development`, `production`",
-      default: process.env.NODE_ENV || 'development',
-      required: true
-    },
     "db.host": {
       description: "MySQL server address",
       message: "db.host must be required",
@@ -71,18 +65,31 @@ var schema = {
   }
 };
 
-var getInputs = function(callback) {
-  prompt.get(schema, callback);
+var getNodeEnv = function(callback) {
+  prompt.get({
+    name: "NODE_ENV",
+    description: "NODE_ENV",
+    message: "NODE_ENV must be a string `apitest`, `development`, `production`",
+    default: process.env.NODE_ENV || 'development',
+    required: true
+  }, callback);
+};
+
+var getInputs = function(setting, callback) {
+  prompt.get(schema, function(error, result) {
+    if (error) return callback(error);
+    setting.conf = result;
+    callback(null, setting);
+  });
 };
 
 var confExists = function(setting, callback) {
-  var file = __dirname + '/../src/app/configs/config.' + result.NODE_ENV + '.es';
-  var schema = {
-  };
-  if (!fs.existsSync(file)) return callback(null, {conf: result, file: file});
+  var file = __dirname + '/../src/app/configs/config.' + setting.NODE_ENV + '.es';
+  setting.file = file;
+  if (!fs.existsSync(file)) return callback(null, setting);
   prompt.get({
     name: 'rewrite',
-    message: 'File `' + conf + '` already exists, to continue the operation will rewrite it. yes or no?',
+    message: 'File `' + file + '` already exists, to continue the operation will rewrite it. yes or no?',
     validator: /y[es]*|n[o]?/,
     warning: 'Must respond yes or no',
     default: 'no'
@@ -95,7 +102,7 @@ var confExists = function(setting, callback) {
 
 var dbAuthCheck = function(setting, callback) {
   var conf = setting.conf;
-  var url = 'mysql://' + conf['db.user'] + ':' + conf['db.pass'] + '@' + conf['db.host'] + ':' + conf['db.port']);
+  var url = 'mysql://' + conf['db.user'] + ':' + conf['db.pass'] + '@' + conf['db.host'] + ':' + conf['db.port'];
   var sequelize = rest.Sequelize(url);
   sequelize.authenticate().then(function(error) {
     if (error) return callback(error);
@@ -160,8 +167,9 @@ var writeConf = function(setting, callback) {
 };
 
 async.waterfall([
-  getInputs,
+  getNodeEnv,
   confExists,
+  getInputs,
   dbAuthCheck,
   dbCreate,
   tableCreate,
@@ -172,10 +180,4 @@ async.waterfall([
   } else {
     console.log("Setup complete.");
   }
-});
-
-prompt.get(schema, function (err, result) {
-  var conf = __dirname + '/../src/app/configs/config.' + result.NODE_ENV + '.es';
-  if (fs.existsSync(conf))
-  console.log('Command-line input received:', result);
 });
