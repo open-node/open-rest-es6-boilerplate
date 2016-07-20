@@ -64,7 +64,6 @@
     "name": "open-rest-boilerplate-api-docs",
     "description": "Documents of API v1",
     "title": "API documents of open-rest boilerplate",
-    "url": "/",
     "version": "1.0.0"
   }
 }
