@@ -216,7 +216,7 @@ export const detail = [
  * @apiGroup User
  * @apiParam (body) {String} name 用户语言设置
  * @apiParam (body) {String} email Email 地址
- * @apiParam (body) {String} password Email 地址
+ * @apiParam (body) {String} password 密码
  * @apiParam (body) {String} [language] 用户语言设置
  * @apiParam (body) {Enum} [status] 用户状态`disabled` or `enabled`
  * @apiParam (body) {Enum} [role] 用户角色，`admin` or `number`
