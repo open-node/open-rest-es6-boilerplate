@@ -15,7 +15,7 @@
     "build": "babel -d build/ src/",
     "locale:read": "find ./src/app -type f | node_modules/.bin/open-i18n read > bin/locale/application.pot && msgmerge -UN --no-wrap ./bin/locale/en.po ./bin/locale/application.pot && msgmerge -UN --no-wrap ./bin/locale/zh.po ./bin/locale/application.pot",
     "locale:write": "./bin/write.js ./bin/locale/zh.po zh && ./bin/write.js ./bin/locale/en.po en",
-    "apidoc": "gulp apidoc",
+    "apidocs": "apidoc -i ./src/ -o ./docs/apidocs/ -f '.*\\.js$' -f '.*\\.es$'",
     "start": "NODE_ENV=development && npm run build && node build/index.js",
     "setup": "npm install && npm run build && ./bin/setup"
   },
@@ -52,13 +52,19 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
+    "apidoc": "^0.16.1",
     "babel-cli": "^6.9.0",
     "babel-polyfill": "^6.9.0",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.9.0",
-    "gulp": "^3.9.1",
-    "gulp-apidoc": "^0.2.4",
     "restspec": "^1.0.2"
+  },
+  "apidoc": {
+    "name": "open-rest-boilerplate-api-docs",
+    "description": "Documents of API v1",
+    "title": "API documents of open-rest boilerplate",
+    "url": "/",
+    "version": "1.0.0"
   }
 }
