@@ -14,7 +14,7 @@ services:
   - redis
 
 before_script:
-  - "npm run build"
+  - "babel -d ./build ./src"
   - "mysql -e 'create database open_rest_es6_boilerplate;'"
 
 node_js:
