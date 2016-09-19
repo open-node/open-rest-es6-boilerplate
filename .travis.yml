@@ -9,6 +9,9 @@ addons:
     packages:
       - g++-4.8
 
+before_script:
+  - "npm run build"
+
 node_js:
   - "6"
   - "5"
