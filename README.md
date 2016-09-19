@@ -1,5 +1,7 @@
 # open-rest-es-boilerplate
-=====================
+Open-rest es6 boilerplate
+
+[![Build status](https://api.travis-ci.org/open-node/open-rest-es-boilerplate.svg?branch=master)](https://travis-ci.org/open-node/open-rest-es-boilerplate)
 
 ## Quick start
 <pre>
