@@ -16,10 +16,10 @@ export const sysAdmin = (error) => {
 };
 
 /**  检测资源是否属于自己 */
-export const ownSelf = (_id = 'id', obj, allowEmpty, error) => {
+export const ownSelf = (keyPath, allowEmpty, error) => {
   if (!error instanceof Error) error = errors.notFound(error);
   return (req, res, next) => {
-    let id = U.getId(req, _id, obj)
+    let id = +U._.get(req, keyPath)
     if (allowEmpty && (id === '')) return next();
     if (req.user.id === id) return next();
     return next(error);

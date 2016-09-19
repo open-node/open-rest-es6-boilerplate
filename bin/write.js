@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var _           = require("underscore")
+var _           = require("lodash")
   , fs          = require("fs");
 
 var po2json = function(str) {

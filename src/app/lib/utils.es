@@ -18,7 +18,7 @@ for (let k in pkg.dependencies) {
 
 /** 个别特殊处理的库包 alias */
 U.rest    = U.openRest;
-U._       = U.underscore;
+U._       = U.lodash;
 U.cached  = U.openCache;
 
 var utils = {

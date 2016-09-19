@@ -1,4 +1,4 @@
-var U     = require('../../../build/app/lib/utils').default;
+var U     = require('../../build/app/lib/utils').default;
 var enabledToken = '';
 
 cases = [{

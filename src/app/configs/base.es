@@ -7,6 +7,20 @@ export default {
     port: 9988
   },
 
+  logger: {
+    name: 'open-rest-es-boilerplate',
+    streams: [{
+      level: 'info',
+      path: `${__dirname}/../../../storage/logs/info.log`
+    }, {
+      level: 'error',
+      path: `${__dirname}/../../../storage/logs/error.log`
+    }, {
+      level: 'warn',
+      path: `${__dirname}/../../../storage/logs/warn.log`
+    }]
+  },
+
   /** body 解析参数控制 */
   bodyParser: {
     multiples: false,

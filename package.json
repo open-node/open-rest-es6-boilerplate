@@ -1,6 +1,6 @@
 {
   "name": "open-rest-es6-boilerplate",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "RESTful API framework based on koajs",
   "main": "build/index.js",
   "babel": {
@@ -11,8 +11,8 @@
   },
   "openI18n": {},
   "scripts": {
-    "test": "export NODE_ENV=apitest && npm install && npm run build && node ./test/index.js",
-    "build": "babel -d build/ src/",
+    "test": "export NODE_ENV=apitest && npm install && ./bin/apitest-init.js && mocha",
+    "build": "babel -d ./build ./src -w",
     "locale:read": "find ./src/app -type f | node_modules/.bin/open-i18n read > bin/locale/application.pot && msgmerge -UN --no-wrap ./bin/locale/en.po ./bin/locale/application.pot && msgmerge -UN --no-wrap ./bin/locale/zh.po ./bin/locale/application.pot",
     "locale:write": "./bin/write.js ./bin/locale/zh.po zh && ./bin/write.js ./bin/locale/en.po en",
     "apidocs": "apidoc -i ./src/ -o ./docs/apidocs/ -f '.*\\.js$' -f '.*\\.es$'",
@@ -37,19 +37,24 @@
   },
   "homepage": "https://github.com/open-node/open-rest-es6-boilerplate#readme",
   "dependencies": {
+    "bunyan": "^1.8.1",
     "commander": "^2.9.0",
     "cron": "^1.1.0",
     "exec": "^0.2.1",
     "glob": "^7.0.3",
+    "lodash": "^4.14.1",
     "md5": "^2.1.0",
     "moment": "^2.13.0",
     "on-finished": "^2.3.0",
     "open-cache": "^0.3.1",
     "open-i18n": "^0.1.0",
-    "open-rest": "6.2.0",
+    "open-rest": "7.0.0-rc1",
     "open-rest-access-log": "^0.1.0",
-    "prompt": "^1.0.0",
-    "underscore": "^1.8.3"
+    "open-rest-helper-assert": "^0.6.0",
+    "open-rest-helper-getter": "^0.6.0",
+    "open-rest-helper-params": "^0.5.0",
+    "open-rest-helper-rest": "^0.5.0",
+    "prompt": "^1.0.0"
   },
   "devDependencies": {
     "apidoc": "^0.16.1",
@@ -58,7 +63,8 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.9.0",
-    "restspec": "^1.1.0"
+    "mocha": "^3.0.2",
+    "restspec": "3.0.0"
   },
   "apidoc": {
     "name": "open-rest-boilerplate-api-docs",

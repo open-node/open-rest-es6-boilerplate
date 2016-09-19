@@ -1,5 +1,5 @@
 var assert  = require('assert')
-  , U       = require('../../build/app/lib/utils').default;
+  , U       = require('../build/app/lib/utils').default;
 
 describe('Utils', function() {
 

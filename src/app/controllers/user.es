@@ -6,14 +6,6 @@ const User = U.model('user');
 const CHECK_PASS_COLS = [
   'email', 'password'
 ];
-const USER_ACTIONS = [
-  helper.getter(User, 'user', 'userId'),
-  helper.assert.exists('user'),
-  [
-    helper.checker.ownSelf('id', 'user'),
-    helper.checker.sysAdmin()
-  ]
-];
 
 /**
  * @api {GET} /session 查询 Session
@@ -154,13 +146,13 @@ export const list = [
  */
 export const modify = [
   helper.getter(User, 'user'),
-  helper.assert.exists('user'),
+  helper.assert.exists('hooks.user'),
   [
     helper.checker.ownSelf('id', 'user'),
     helper.checker.sysAdmin()
   ],
   helper.user.checkPass(CHECK_PASS_COLS, true, true),
-  helper.rest.modify(User, 'user')
+  helper.rest.modify.Model(User).hook('user').exec()
 ];
 
 /**
@@ -176,8 +168,8 @@ export const modify = [
 export const remove = [
   helper.checker.sysAdmin(),
   helper.getter(User, 'user'),
-  helper.assert.exists('user'),
-  helper.rest.remove('user')
+  helper.assert.exists('hooks.user'),
+  helper.rest.remove.hook('user').exec()
 ];
 
 /**
@@ -205,7 +197,7 @@ export const remove = [
  */
 export const detail = [
   helper.getter(User, 'user'),
-  helper.assert.exists('user'),
+  helper.assert.exists('hooks.user'),
   helper.rest.detail('user')
 ];
 
