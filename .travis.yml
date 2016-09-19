@@ -9,8 +9,13 @@ addons:
     packages:
       - g++-4.8
 
+services:
+  - mysql
+  - redis
+
 before_script:
   - "npm run build"
+  - "mysql -e 'create database open_rest_es6_boilerplate;'"
 
 node_js:
   - "6"
