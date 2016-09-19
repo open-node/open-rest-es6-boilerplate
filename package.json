@@ -19,7 +19,7 @@
   "openI18n": {},
   "scripts": {
     "test": "export NODE_ENV=apitest && npm install && babel -d ./build ./src && ./bin/apitest-init.js && mocha",
-    "coverage": "nyc --reporter=lcov --reporter=text-lcov -x build npm test",
+    "coverage": "nyc --reporter=lcov --reporter=text-summary -x build npm test",
     "build": "babel -d ./build ./src -w",
     "locale:read": "find ./src/app -type f | node_modules/.bin/open-i18n read > bin/locale/application.pot && msgmerge -UN --no-wrap ./bin/locale/en.po ./bin/locale/application.pot && msgmerge -UN --no-wrap ./bin/locale/zh.po ./bin/locale/application.pot",
     "locale:write": "./bin/write.js ./bin/locale/zh.po zh && ./bin/write.js ./bin/locale/en.po en",
