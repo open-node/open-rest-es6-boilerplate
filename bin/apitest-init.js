@@ -8,8 +8,8 @@ var U     = require('../build/app/lib/utils').default
   , datafile = __dirname + "/../src/app/configs/test-data.sql";
 
 var command = [
-  "mysql -h" + db.host + " -u" + db.user + " -P " + db.port + (db.pass ? " -p'" + db.pass + "' " : '') + db.name + " < " + strfile,
-  "mysql -h" + db.host + " -u" + db.user + " -P " + db.port + (db.pass ? " -p'" + db.pass + "' " : '') + db.name + " < " + datafile
+  "mysql -h" + db.host + " -u" + db.user + " -P " + db.port + (db.pass ? " -p'" + db.pass + "' " : ' ') + db.name + " < " + strfile,
+  "mysql -h" + db.host + " -u" + db.user + " -P " + db.port + (db.pass ? " -p'" + db.pass + "' " : ' ') + db.name + " < " + datafile
 ].join('\n');
 
 // flushRedis
