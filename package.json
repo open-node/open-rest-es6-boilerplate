@@ -18,8 +18,8 @@
   },
   "openI18n": {},
   "scripts": {
-    "test": "export NODE_ENV=apitest && npm install && babel -d ./build ./src && ./bin/apitest-init.js && mocha",
-    "coverage": "nyc --reporter=lcov --reporter=text-summary -x build npm test",
+    "_test": "export NODE_ENV=apitest && npm install && babel -d ./build ./src && ./bin/apitest-init.js && mocha",
+    "test": "nyc --reporter=lcov --reporter=text-summary -x build npm run _test",
     "build": "babel -d ./build ./src -w",
     "locale:read": "find ./src/app -type f | node_modules/.bin/open-i18n read > bin/locale/application.pot && msgmerge -UN --no-wrap ./bin/locale/en.po ./bin/locale/application.pot && msgmerge -UN --no-wrap ./bin/locale/zh.po ./bin/locale/application.pot",
     "locale:write": "./bin/write.js ./bin/locale/zh.po zh && ./bin/write.js ./bin/locale/en.po en",
@@ -55,7 +55,7 @@
     "moment": "^2.13.0",
     "on-finished": "^2.3.0",
     "open-cache": "^0.3.1",
-    "open-i18n": "^0.1.0",
+    "open-i18n": "^0.2.0",
     "open-rest": "7.0.0-rc1",
     "open-rest-access-log": "^0.1.0",
     "open-rest-helper-assert": "^0.6.0",
@@ -74,6 +74,7 @@
     "babel-register": "^6.9.0",
     "mocha": "^3.0.2",
     "nyc": "^8.3.0",
+    "codecov": "^1.0.1",
     "restspec": "3.0.0"
   },
   "nyc": {
