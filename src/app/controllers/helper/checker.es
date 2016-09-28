@@ -17,10 +17,10 @@ export const sysAdmin = (error) => {
 
 /**  检测资源是否属于自己 */
 export const ownSelf = (keyPath, allowEmpty, error) => {
-  if (!error instanceof Error) error = errors.notFound(error);
+  if (!(error instanceof Error)) error = errors.notFound(error);
   return (req, res, next) => {
-    let id = +U._.get(req, keyPath)
-    if (allowEmpty && (id === '')) return next();
+    let id = +U._.get(req, keyPath) || 0
+    if (allowEmpty && (id === 0)) return next();
     if (req.user.id === id) return next();
     return next(error);
   };
@@ -28,7 +28,7 @@ export const ownSelf = (keyPath, allowEmpty, error) => {
 
 /** 检测私有客户端功能 */
 export const privateSwitch = (privateSwitch, error) => {
-  if (!error instanceof Error) error = errors.notFound(error);
+  if (!(error instanceof Error)) error = errors.notFound(error);
   return (req, res, next) => {
     /** 判断是否是私有ip客户端，并且允许私有客户端直接访问 */
     if (req.allowPrivateSwitch(privateSwitch)) return next();

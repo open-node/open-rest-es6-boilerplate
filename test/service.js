@@ -1,7 +1,8 @@
 var assert      = require('assert')
   , specs       = require('../specs/api_spec');
 
-require('../build/index');
+require('../build');
+
 describe('apitest', function() {
 
   describe('#run api test case', function() {
