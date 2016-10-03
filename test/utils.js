@@ -1,6 +1,8 @@
 var assert  = require('assert')
   , U       = require('../build/app/lib/utils').default;
 
+var base64image = 'data:image/gif;base64,R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=';
+
 describe('Utils', function() {
 
   var privateIpMerge = U.privateIpMerge;
@@ -100,4 +102,74 @@ describe('Utils', function() {
       done();
     });
   });
+
+  describe('#mkdirp', function() {
+
+    it('target dir exists', function(done) {
+      var dir = __dirname;
+      U.mkdirp(dir);
+
+      assert.ok(U.fs.existsSync(dir));
+
+      done();
+    });
+
+    it('parent dir exists', function(done) {
+      var dir = __dirname + '/test-mkdirp';
+      if (U.fs.existsSync(dir)) U.fs.rmdirSync(dir);
+
+      U.mkdirp(dir)
+
+      assert.ok(U.fs.existsSync(dir));
+
+      U.fs.rmdirSync(dir);
+
+      done();
+    });
+
+    it('parent dir non-exists', function(done) {
+      var dir = __dirname + '/test-mkdirp-non-exists/test';
+      var parent = __dirname + '/test-mkdirp-non-exists';
+      if (U.fs.existsSync(dir)) U.fs.rmdirSync(dir);
+      if (U.fs.existsSync(parent)) U.fs.rmdirSync(parent);
+
+      U.mkdirp(dir)
+
+      assert.ok(U.fs.existsSync(dir));
+      U.fs.rmdirSync(dir);
+      U.fs.rmdirSync(parent);
+
+      done();
+    });
+
+  });
+
+  describe('#decodeBase64Image', function() {
+
+    it('dataString unset', function(done) {
+      assert.equal(undefined, U.decodeBase64Image());
+      assert.equal(undefined, U.decodeBase64Image(''));
+      assert.equal(undefined, U.decodeBase64Image(undefined));
+      assert.equal(undefined, U.decodeBase64Image(null));
+      assert.equal(undefined, U.decodeBase64Image(0));
+
+      done();
+    });
+
+    it('dataString set, unmatch', function(done) {
+      assert.equal(undefined, U.decodeBase64Image('hello world'));
+
+      done();
+    });
+
+    it('dataString set, match length is 3', function(done) {
+      var ret = U.decodeBase64Image(base64image);
+      assert.equal('image/gif', ret.type);
+      assert.equal('R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=', ret.data.toString('base64'));
+
+      done();
+    });
+
+  });
+
 });

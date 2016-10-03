@@ -64,7 +64,7 @@ var utils = {
   /** 解码base64的图片 */
   decodeBase64Image: (dataString) => {
     if (!dataString) return;
-    matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/)
+    let matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/)
     if (!matches) return;
     if (matches.length !== 3) return;
     return {
