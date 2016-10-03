@@ -95,11 +95,9 @@ export const checkPass = (cols, ignoreAdmin, modifyUser) => {
 
 /** 查找用户或者创建用户 */
 export const findOrCreate = (hook) => {
-
   const User = U.model('user');
-  const Auth = U.model('auth');
-
   const emailMissing = errors.missingParameter('Email 必须指定', ['email']);
+
   return (req, res, next) => {
     const { email, name } = req.params;
     if (req.hooks[hook]) return next();

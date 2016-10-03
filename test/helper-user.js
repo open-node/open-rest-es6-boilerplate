@@ -46,6 +46,26 @@ var readUserByTokenError = function(message) {
   };
 };
 
+var findOnePromiseError = function(message) {
+  return function() {
+    return new Promise(function(resolve, reject) {
+      setTimeout(function() {
+        reject(Error(message));
+      }, 10);
+    });
+  };
+};
+
+var findOnePromiseSuccess = function(user) {
+  return function() {
+    return new Promise(function(resolve, reject) {
+      setTimeout(function() {
+        resolve(user);
+      }, 10);
+    });
+  };
+};
+
 var models = {
   auth: sequelize.define('book', {
     id: {
@@ -424,6 +444,235 @@ describe('helper.user', function() {
         done();
       });
 
+    });
+
+  });
+
+  describe('#findOrCreate', function() {
+
+    it('req.hooks.user exists', function(done) {
+      var uModel = U.default.model;
+      U.default.model = function(name) {
+        return models[name];
+      };
+      var req = {
+        hooks: {user: {}},
+        params: {}
+      };
+      var res = {};
+      var findOrCreate = user.findOrCreate('user');
+      findOrCreate(req, res, function(error) {
+        assert.equal(null, error);
+
+        U.default.model = uModel;
+        done();
+      });
+
+    });
+
+    it('req.hooks.user non-exists', function(done) {
+      var uModel = U.default.model;
+      U.default.model = function(name) {
+        return models[name];
+      };
+      var req = {
+        hooks: {user: undefined},
+        params: {}
+      };
+      var res = {};
+      var findOrCreate = user.findOrCreate('user');
+      findOrCreate(req, res, function(error) {
+        assert.ok(error);
+        assert.ok(error instanceof Error);
+        assert.equal('Email 必须指定', error.message);
+        assert.equal(409, error.statusCode);
+        assert.deepEqual({
+          code: 'MissingParameter',
+          message: 'Email 必须指定',
+          value: ['email']
+        }, error.body);
+        assert.equal('MissingParameter', error.restCode);
+
+        U.default.model = uModel;
+        done();
+      });
+    });
+
+    it('req.hooks.user non-exists User.findOne error', function(done) {
+      var uModel = U.default.model;
+      U.default.model = function(name) {
+        return models[name];
+      };
+      var req = {
+        hooks: {user: undefined},
+        params: {
+          email: '13740080@qq.com'
+        }
+      };
+      var res = {};
+      var findOrCreate = user.findOrCreate('user');
+      models.user.findOne = findOnePromiseError('Hi, user find one error');
+      findOrCreate(req, res, function(error) {
+        assert.ok(error);
+        assert.ok(error instanceof Error);
+        assert.equal('Hi, user find one error', error.message);
+
+        U.default.model = uModel;
+        done();
+      });
+    });
+
+    it('req.hooks.user non-exists User.findOne success, user exists', function(done) {
+      var uModel = U.default.model;
+      U.default.model = function(name) {
+        return models[name];
+      };
+      var req = {
+        hooks: {user: undefined},
+        params: {
+          email: '13740080@qq.com'
+        }
+      };
+      var _user = {
+        id: 1,
+        name: 'Redstone Zhao'
+      };
+      var res = {
+        header: function(key, value) {
+          assert.equal('X-Content-System-User', key);
+          assert.equal('exists', value);
+        }
+      };
+      var findOrCreate = user.findOrCreate('user');
+      models.user.findOne = findOnePromiseSuccess(_user);
+      findOrCreate(req, res, function(error) {
+        assert.equal(null, error);
+        assert.equal(1, req.params.userId);
+        assert.equal(_user, req.hooks.user);
+
+        U.default.model = uModel;
+        done();
+      });
+    });
+
+    it('req.hooks.user non-exists User.findOne success, user non-exists, name exists, beforeAdd error', function(done) {
+      var uModel = U.default.model;
+      U.default.model = function(name) {
+        return models[name];
+      };
+      var req = {
+        hooks: {user: undefined},
+        params: {
+          email: '13740080@qq.com'
+        }
+      };
+      var res = {
+        header: function(key, value) {
+          assert.equal('X-Content-System-User', key);
+          assert.equal('exists', value);
+        }
+      };
+      var findOrCreate = user.findOrCreate('user');
+      models.user.findOne = findOnePromiseSuccess(null);
+      U.default.rest.helper.rest = {};
+      U.default.rest.helper.rest.beforeAdd = function() {
+        return function(req, res, next) {
+          return next(Error('Before add error'));
+        };
+      };
+      findOrCreate(req, res, function(error) {
+        assert.ok(error);
+        assert.ok(error instanceof Error);
+        assert.equal('Before add error', error.message);
+
+        U.default.model = uModel;
+        done();
+      });
+    });
+
+    it('req.hooks.user non-exists User.findOne success, user non-exists, name non-exists, beforeAdd success', function(done) {
+      var uModel = U.default.model;
+      U.default.model = function(name) {
+        return models[name];
+      };
+      var req = {
+        hooks: {user: undefined},
+        params: {
+          email: '13740080@qq.com'
+        }
+      };
+      var res = {
+        header: function(key, value) {
+          assert.equal('X-Content-System-User', key);
+          assert.equal('added', value);
+        }
+      };
+      var findOrCreate = user.findOrCreate('user');
+      models.user.findOne = findOnePromiseSuccess(null);
+      U.default.rest.helper.rest = {};
+      U.default.rest.helper.rest.beforeAdd = function() {
+        return function(req, res, next) {
+          req.hooks.user = {
+            id: 9999,
+            name: 'Redstone Zhao'
+          };
+          return next();
+        };
+      };
+      findOrCreate(req, res, function(error) {
+        assert.equal(null, error);
+        assert.equal(9999, req.params.userId);
+        assert.deepEqual({
+          id: 9999,
+          name: 'Redstone Zhao'
+        }, req.hooks.user);
+
+        U.default.model = uModel;
+        done();
+      });
+    });
+
+    it('req.hooks.user non-exists User.findOne success, user non-exists, name exists, beforeAdd success', function(done) {
+      var uModel = U.default.model;
+      U.default.model = function(name) {
+        return models[name];
+      };
+      var req = {
+        hooks: {user: undefined},
+        params: {
+          email: '13740080@qq.com',
+          name: 'Redstone Zhao'
+        }
+      };
+      var res = {
+        header: function(key, value) {
+          assert.equal('X-Content-System-User', key);
+          assert.equal('added', value);
+        }
+      };
+      var findOrCreate = user.findOrCreate('user');
+      models.user.findOne = findOnePromiseSuccess(null);
+      U.default.rest.helper.rest = {};
+      U.default.rest.helper.rest.beforeAdd = function() {
+        return function(req, res, next) {
+          req.hooks.user = {
+            id: 9999,
+            name: 'Redstone Zhao'
+          };
+          return next();
+        };
+      };
+      findOrCreate(req, res, function(error) {
+        assert.equal(null, error);
+        assert.equal(9999, req.params.userId);
+        assert.deepEqual({
+          id: 9999,
+          name: 'Redstone Zhao'
+        }, req.hooks.user);
+
+        U.default.model = uModel;
+        done();
+      });
     });
 
   });
