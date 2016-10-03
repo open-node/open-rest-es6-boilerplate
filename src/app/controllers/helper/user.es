@@ -2,9 +2,6 @@ import errors from '../../lib/errors';
 import U      from '../../lib/utils';
 import config from '../../configs';
 
-const User = U.model('user');
-const Auth = U.model('auth');
-
 /** 读取session */
 export const session = (statusCode = 200) => {
   return (req, res, next) => {
@@ -15,6 +12,9 @@ export const session = (statusCode = 200) => {
 
 /** 退出 */
 export const logout = () => {
+
+  const Auth = U.model('auth');
+
   return (req, res, next) => {
     const token = U.getToken(req);
     const done = () => {
@@ -35,6 +35,10 @@ export const logout = () => {
 
 /** 登陆 */
 export const login = () => {
+
+  const User = U.model('user');
+  const Auth = U.model('auth');
+
   return (req, res, next) => {
     const {email, password} = req.params;
     /**
@@ -66,6 +70,9 @@ export const login = () => {
  *   modifyUser: Boolean 是否是修改用户信息 此时仅当管理员要修改别人的信息才生效，修改自己的信息，任何人都要验证
  */
 export const checkPass = (cols, ignoreAdmin, modifyUser) => {
+
+  const User = U.model('user');
+
   return (req, res, next) => {
     var user = req.user;
     const { origPass } = req.params;
@@ -88,6 +95,10 @@ export const checkPass = (cols, ignoreAdmin, modifyUser) => {
 
 /** 查找用户或者创建用户 */
 export const findOrCreate = (hook) => {
+
+  const User = U.model('user');
+  const Auth = U.model('auth');
+
   const emailMissing = errors.missingParameter('Email 必须指定', ['email']);
   return (req, res, next) => {
     const { email, name } = req.params;
