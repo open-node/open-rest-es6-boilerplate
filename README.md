@@ -13,15 +13,15 @@ Open-rest es6 boilerplate
 </pre>
 
 ## Feature list
-- [x] [open-rest@7.0.0-rc1](https://github.com/open-node/open-rest)
-- [x] [open-i18n@0.1.0](https://github.com/open-node/open-i18n)
+- [x] [open-rest@7.0.0](https://github.com/open-node/open-rest)
+- [x] [open-i18n@0.3.0](https://github.com/open-node/open-i18n)
 - [x] [open-rest-access-log@0.1.0](https://github.com/open-node/open-rest-access-log)
 - [x] [open-rest-helper-getter@0.6.0](https://github.com/open-node/open-rest-helper-getter)
 - [x] [open-rest-helper-assert@0.6.0](https://github.com/open-node/open-rest-helper-assert)
 - [x] [open-rest-helper-params@0.5.0](https://github.com/open-node/open-rest-helper-params)
-- [x] [open-rest-helper-rest@0.5.0](https://github.com/open-node/open-rest-helper-rest)
+- [x] [open-rest-helper-rest@0.6.0](https://github.com/open-node/open-rest-helper-rest)
 - [x] [open-cache@0.3.1](https://github.com/open-node/open-cache)
-- [x] [restspec@1.1.0](https://github.com/open-node/restspec)
+- [x] [restspec@3.0.0](https://github.com/open-node/restspec)
 - [x] [Mochajs](https://mochajs.org/)
 
 ## npm run *
