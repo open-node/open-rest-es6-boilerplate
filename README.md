@@ -14,7 +14,7 @@ Open-rest es6 boilerplate
 
 ## Feature list
 - [x] [open-rest@7.0.0](https://github.com/open-node/open-rest)
-- [x] [open-i18n@0.3.0](https://github.com/open-node/open-i18n)
+- [x] [open-i18n@0.4.0](https://github.com/open-node/open-i18n)
 - [x] [open-rest-access-log@0.1.0](https://github.com/open-node/open-rest-access-log)
 - [x] [open-rest-helper-getter@0.6.0](https://github.com/open-node/open-rest-helper-getter)
 - [x] [open-rest-helper-assert@0.6.0](https://github.com/open-node/open-rest-helper-assert)
