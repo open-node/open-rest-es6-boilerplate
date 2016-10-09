@@ -32,4 +32,3 @@ Open-rest es6 boilerplate
   * `locale:read` Collect language items
   * `locale:write` Make language packages
   * `setup` install config & db
-
