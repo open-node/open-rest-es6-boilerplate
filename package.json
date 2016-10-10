@@ -25,18 +25,18 @@
     "build-prod": "export NODE_ENV=production && babel -d ./build ./src -w",
     "build-dev": "export NODE_ENV=development && babel -d ./build ./src -w",
 
-    "build-test-nonwatch": "export NODE_ENV=apitest && babel -d ./build ./src",
-    "build-prod-nonwatch": "export NODE_ENV=production && babel -d ./build ./src",
-    "build-dev-nonwatch": "export NODE_ENV=development && babel -d ./build ./src",
+    "build-test-nowatch": "export NODE_ENV=apitest && babel -d ./build ./src",
+    "build-prod-nowatch": "export NODE_ENV=production && babel -d ./build ./src",
+    "build-dev-nowatch": "export NODE_ENV=development && babel -d ./build ./src",
 
     "release": "export NODE_ENV=production && babel -d ./build ./src",
     "locale:read": "find ./src/app -type f | node_modules/.bin/open-i18n read > bin/locale/application.pot && msgmerge -UN --no-wrap ./bin/locale/en.po ./bin/locale/application.pot && msgmerge -UN --no-wrap ./bin/locale/zh.po ./bin/locale/application.pot",
     "locale:write": "./bin/write.js ./bin/locale/zh.po zh && ./bin/write.js ./bin/locale/en.po en",
     "apidocs": "apidoc -i ./src/ -o ./docs/apidocs/ -f '.*\\.js$' -f '.*\\.es$'",
 
-    "start": "NODE_ENV=production && npm run build-prod-nonwatch && node build/index.js",
-    "start-dev": "NODE_ENV=development && npm run build-dev-nonwatch && node build/index.js",
-    "start-test": " NODE_ENV=apitest && npm run build-test-nonwatch && node build/index.js",
+    "start": "NODE_ENV=production && npm run build-prod-nowatch && node build/index.js",
+    "start-dev": "NODE_ENV=development && npm run build-dev-nowatch && node build/index.js",
+    "start-test": " NODE_ENV=apitest && npm run build-test-nowatch && node build/index.js",
 
     "setup": "npm install && npm run build && ./bin/setup"
   },
