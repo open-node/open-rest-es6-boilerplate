@@ -19,13 +19,12 @@ Open-rest es6 boilerplate
 - [x] [open-rest-helper-getter@0.6.0](https://github.com/open-node/open-rest-helper-getter)
 - [x] [open-rest-helper-assert@0.6.0](https://github.com/open-node/open-rest-helper-assert)
 - [x] [open-rest-helper-params@0.5.0](https://github.com/open-node/open-rest-helper-params)
-- [x] [open-rest-helper-rest@0.6.0](https://github.com/open-node/open-rest-helper-rest)
-- [x] [open-cache@0.3.1](https://github.com/open-node/open-cache)
+- [x] [open-rest-helper-rest@0.8.0](https://github.com/open-node/open-rest-helper-rest)
+- [x] [open-cache@0.4.0](https://github.com/open-node/open-cache)
 - [x] [restspec@3.0.0](https://github.com/open-node/restspec)
 - [x] [Mochajs](https://mochajs.org/)
 
 ## npm run *
-  * `build` Build application babel -d build/ src/
   * `test` Run test unit case && api test case
   * `apidoc` Make api docs, base on apidocs
   * `start` Start rest api with development mode
