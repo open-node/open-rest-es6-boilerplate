@@ -1,17 +1,16 @@
-import errors from '../../lib/errors';
-import U      from '../../lib/utils';
-import config from '../../configs';
+const errors = require('../../lib/errors');
+const U      = require('../../lib/utils');
 
 /** 读取session */
-export const session = (statusCode = 200) => {
+const session = (statusCode = 200) => {
   return (req, res, next) => {
-    res.send(statusCode, req.user)
+    res.send(statusCode, req.user);
     next();
   };
 };
 
 /** 退出 */
-export const logout = () => {
+const logout = () => {
 
   const Auth = U.model('auth');
 
@@ -34,7 +33,7 @@ export const logout = () => {
 };
 
 /** 登陆 */
-export const login = () => {
+const login = () => {
 
   const User = U.model('user');
   const Auth = U.model('auth');
@@ -69,12 +68,12 @@ export const login = () => {
  *   ignoreAdmin: Boolean 当用户是管理员是否要忽略,
  *   modifyUser: Boolean 是否是修改用户信息 此时仅当管理员要修改别人的信息才生效，修改自己的信息，任何人都要验证
  */
-export const checkPass = (cols, ignoreAdmin, modifyUser) => {
+const checkPass = (cols, ignoreAdmin, modifyUser) => {
 
   const User = U.model('user');
 
   return (req, res, next) => {
-    var user = req.user;
+    let user = req.user;
     const { origPass } = req.params;
     if (!user) return next(errors.notFound());
     if (ignoreAdmin && (req.isAdmin === true)) {
@@ -83,7 +82,7 @@ export const checkPass = (cols, ignoreAdmin, modifyUser) => {
       }
     }
     /** 判断如果没有必要的字段修改则不进行验证 */
-    var dangers = U._.filter(cols, (x) => req.params.hasOwnProperty(x))
+    let dangers = U._.filter(cols, (x) => req.params.hasOwnProperty(x));
     if (!dangers.length) return next();
     if (!origPass) return next(errors.notAuth());
     User.checkPass(req, user.email, origPass, (error) => {
@@ -94,7 +93,7 @@ export const checkPass = (cols, ignoreAdmin, modifyUser) => {
 };
 
 /** 查找用户或者创建用户 */
-export const findOrCreate = (hook) => {
+const findOrCreate = (hook) => {
   const User = U.model('user');
   const emailMissing = errors.missingParameter('Email 必须指定', ['email']);
 
@@ -119,3 +118,5 @@ export const findOrCreate = (hook) => {
     }).catch(next);
   };
 };
+
+module.exports = {session, login, logout, checkPass, findOrCreate};

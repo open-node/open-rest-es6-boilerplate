@@ -1,4 +1,4 @@
-var U = require('../../build/app/lib/utils').default;
+const U = require('../../app/lib/utils');
 
 module.exports = [{
   name: '管理员添加一个用户',

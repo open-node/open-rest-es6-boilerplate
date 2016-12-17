@@ -1,6 +1,5 @@
-import U from '../lib/utils';
-import helper from './helper';
-import config from '../configs';
+const U       = require('../lib/utils');
+const helper  = require('./helper');
 
 const User = U.model('user');
 const CHECK_PASS_COLS = [
@@ -33,7 +32,7 @@ const CHECK_PASS_COLS = [
  *   }
  * @apiVersion 1.0.0
  */
-export const session = [
+const session = [
   helper.user.session()
 ];
 
@@ -65,7 +64,7 @@ export const session = [
  *   }
  * @apiVersion 1.0.0
  */
-export const login = [
+const login = [
   helper.user.login(),
   helper.user.session(201)
 ];
@@ -80,8 +79,8 @@ export const login = [
 
  * @apiVersion 1.0.0
  */
-export const logout = [
-   helper.user.logout()
+const logout = [
+  helper.user.logout()
 ];
 
 /**
@@ -110,7 +109,7 @@ export const logout = [
  *   }]
  * @apiVersion 1.0.0
  */
-export const list = [
+const list = [
   helper.checker.sysAdmin(),
   helper.rest.list(User)
 ];
@@ -144,7 +143,7 @@ export const list = [
  *   }
  * @apiVersion 1.0.0
  */
-export const modify = [
+const modify = [
   helper.getter(User, 'user'),
   helper.assert.exists('hooks.user'),
   [
@@ -165,7 +164,7 @@ export const modify = [
  *   HTTP/1.1 204 No Content
  * @apiVersion 1.0.0
  */
-export const remove = [
+const remove = [
   helper.checker.sysAdmin(),
   helper.getter(User, 'user'),
   helper.assert.exists('hooks.user'),
@@ -195,7 +194,7 @@ export const remove = [
  *   }
  * @apiVersion 1.0.0
  */
-export const detail = [
+const detail = [
   helper.getter(User, 'user'),
   helper.assert.exists('hooks.user'),
   helper.rest.detail('user')
@@ -230,7 +229,12 @@ export const detail = [
  *   }
  * @apiVersion 1.0.0
  */
-export const add = [
+const add = [
   helper.checker.sysAdmin(),
   helper.rest.add(User)
-]
+];
+
+module.exports = {
+  session, login, logout,
+  list, detail, modify, remove, add
+};

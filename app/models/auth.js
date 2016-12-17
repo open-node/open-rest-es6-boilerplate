@@ -1,5 +1,5 @@
-import U from '../lib/utils';
-import ModelBase from './base';
+const U         = require('../lib/utils');
+const ModelBase = require('./base');
 
 const Sequelize = U.rest.Sequelize;
 const TOKEN_ERROR = Error('Token error.');
@@ -7,30 +7,28 @@ const USER_NO_EXISTS = Error('User dont exists.');
 const USER_STATUS_ERROR = Error('User had disabled.');
 const USER_DELETED_ERROR = Error('User had deleted.');
 
-var readUserByToken = (token, callback) => {
-  U.model('auth').findByToken(token).then((auth) => {
+let readUserByToken = (token, callback) => {
+  U.model('auth').findByToken(token).catch(callback).then((auth) => {
     if (!auth) return callback(TOKEN_ERROR);
-    U.model('user').findById(auth.creatorId).then((user) => {
+    U.model('user').findById(auth.creatorId).catch(callback).then((user) => {
       if (!user) return callback(USER_NO_EXISTS);
       if (user.status === 'disabled') return callback(USER_STATUS_ERROR);
       if (user.isDelete === 'yes') return callback(USER_DELETED_ERROR);
-      var json = user.toJSON();
+      let json = user.toJSON();
       json.auth = auth.toJSON();
       callback(null, json);
-    }).catch(callback)
-  }).catch(callback)
+    });
+  });
 };
 
-/** 让这个函数具有cache的能力,减少对token和user表的读取 */
-try {
+/** open-cache 是否初始化了 */
+if (U.cached.inited) {
+  /** 让这个函数具有cache的能力,减少对token和user表的读取 */
   readUserByToken = U.cached("Token::{0}", readUserByToken, 300);
-} catch (e) {
-  console.error("readUserByToken cached faild", e, e.stack);
 }
 
-export default (sequelize) => {
-  var Auth;
-  return Auth = U._.extend(sequelize.define('auth', {
+module.exports = (sequelize) => {
+  const Auth = U._.extend(sequelize.define('auth', {
     id: {
       type: Sequelize.INTEGER.UNSIGNED,
       primaryKey: true,
@@ -122,4 +120,6 @@ export default (sequelize) => {
       allow: ['id', 'name', 'updatedAt', 'createdAt']
     }
   });
+
+  return Auth;
 };

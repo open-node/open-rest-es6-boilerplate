@@ -1,11 +1,10 @@
-import U from '../lib/utils';
-import ModelBase from './base';
+const U         = require('../lib/utils');
+const ModelBase = require('./base');
 
 const Sequelize   = U.rest.Sequelize;
 
-export default (sequelize) => {
-  var Log;
-  return Log = U._.extend(sequelize.define('log', {
+module.exports = (sequelize) => {
+  const Log = U._.extend(sequelize.define('log', {
     id: {
       type: Sequelize.INTEGER.UNSIGNED,
       primaryKey: true,
@@ -61,4 +60,6 @@ export default (sequelize) => {
     },
     writableCols: []
   });
+
+  return Log;
 };

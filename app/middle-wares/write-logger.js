@@ -1,13 +1,13 @@
-import U from '../lib/utils';
+const U = require('../lib/utils');
 
-export default () => {
+module.exports = () => {
   return (req, res, next) => {
     /** log的记录不影响正常的访问，所以先直接调用next */
-    next()
+    next();
     /** 读操作略过 */
     if (req.method === 'GET') return;
 
-    var log = {
+    let log = {
       params: JSON.stringify(req.params),
       uri: req.url,
       verb: req.method

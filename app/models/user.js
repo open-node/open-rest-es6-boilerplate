@@ -1,12 +1,13 @@
-import U from '../lib/utils';
-import ModelBase  from './base';
-import config from '../configs'
+const U         = require('../lib/utils');
+const ModelBase = require('./base');
+const config    = require('../configs');
 
 const Sequelize = U.rest.Sequelize;
 const CHECK_PASS_ERROR = Error('Password or Email error.');
 const USER_STATUS_ERROR = Error('User had disabled.');
 const USER_DELETED_ERROR = Error('User had deleted.');
-const AVATAR_ROOT = config.avatar.uri
+const AVATAR_ROOT = config.avatar.uri;
+const AVATAR_PATH = config.avatar.path;
 
 const CALC_PASS = (user) => {
   if ((user.changed().indexOf('password') > -1) || (user.isNewRecord))  {
@@ -16,8 +17,7 @@ const CALC_PASS = (user) => {
 
 
 module.exports = (sequelize) => {
-  var User;
-  return User = U._.extend(sequelize.define('user', {
+  const User = U._.extend(sequelize.define('user', {
     id: {
       type: Sequelize.INTEGER.UNSIGNED,
       primaryKey: true,
@@ -27,7 +27,7 @@ module.exports = (sequelize) => {
       type: Sequelize.STRING(30),
       allowNull: false,
       set: function(val) {
-        this.setDataValue('name', U.nt2space(val))
+        this.setDataValue('name', U.nt2space(val));
       },
       validate: {
         len: [2, 30]
@@ -41,19 +41,19 @@ module.exports = (sequelize) => {
       },
       get: function() {
         if (!this.getDataValue('avatar')) return null;
-        return `${AVATAR_ROOT}/${this.getDataValue('avatar')}`
+        return `${AVATAR_ROOT}/${this.getDataValue('avatar')}`;
       },
       set: function(val) {
-        var image, val, origFile, filepath;
+        let image, value, origFile, filepath;
         image = U.decodeBase64Image(val);
         if (!image) return;
-        val = User.avatarPath(`${this.id}_${U.randStr(10)}`, image.type);
+        value = User.avatarPath(`${this.id}_${U.randStr(10)}`, image.type);
         origFile = `${AVATAR_PATH}/${this.getDataValue('avatar')}`;
         U.fs.existsSync(origFile) && U.fs.unlinkSync(origFile);
-        filepath = `${AVATAR_PATH}/${val}`;
+        filepath = `${AVATAR_PATH}/${value}`;
         U.mkdirp(U.path.dirname(filepath));
         U.fs.writeFileSync(filepath, image.data);
-        this.setDataValue('avatar', val);
+        this.setDataValue('avatar', value);
       },
       comment: '用户头像'
     },
@@ -146,14 +146,14 @@ module.exports = (sequelize) => {
 
     classMethods: {
       checkPass: (req, email, password, callback) => {
-        var where = {email};
-        User.findOne({where}).then((user) => {
+        let where = {email};
+        User.findOne({where}).catch(callback).then((user) => {
           if (!user) return callback(CHECK_PASS_ERROR);
           if (!user.checkPass(password)) return callback(CHECK_PASS_ERROR);
           if (user.status === 'disabled') return callback(USER_STATUS_ERROR);
           if (user.isDelete === 'yes') return callback(USER_DELETED_ERROR);
           callback(null, user);
-        }).catch(callback)
+        });
       },
 
       /** 计算头像路径 */
@@ -193,4 +193,6 @@ module.exports = (sequelize) => {
       'language'
     ]
   });
+
+  return User;
 };

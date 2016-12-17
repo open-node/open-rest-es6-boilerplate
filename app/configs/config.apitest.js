@@ -1,4 +1,4 @@
-import config from './base';
+const config = require('./base');
 
 const env = process.env;
 
@@ -11,4 +11,4 @@ config.cache.host = '127.0.0.1';
 config.cache.port = '6379';
 config.cache.opts.namespace = 'ORB';
 
-export default config;
+module.exports = config;

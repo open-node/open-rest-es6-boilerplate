@@ -1,16 +1,16 @@
-var assert  = require('assert')
-  , checker = require('../build/app/controllers/helper/checker');
+const assert  = require('assert');
+const checker = require('../app/controllers/helper/checker');
 
 describe('helper.checker', function() {
 
   describe('#sysAdmin', function() {
 
     it("未指定错误", function(done) {
-      var req = {
+      let req = {
         isAdmin: false
       };
-      var res = {};
-      var check = checker.sysAdmin();
+      let res = {};
+      let check = checker.sysAdmin();
       check(req, res, function(error) {
         assert.ok(error instanceof Error);
         assert.equal('Resource not found.', error.message);
@@ -32,12 +32,12 @@ describe('helper.checker', function() {
     });
 
     it("指定错误", function(done) {
-      var req = {
+      let req = {
         isAdmin: false
       };
-      var res = {};
-      var err = Error('您不是管理员，不能执行该操作');
-      var check = checker.sysAdmin(err);
+      let res = {};
+      let err = Error('您不是管理员，不能执行该操作');
+      let check = checker.sysAdmin(err);
       check(req, res, function(error) {
         assert.equal(err, error);
       });
@@ -56,14 +56,14 @@ describe('helper.checker', function() {
   describe('#ownSelf', function() {
 
     it("未指定错误, allowEmpty = false", function(done) {
-      var req = {
+      let req = {
         params: {
           userId: '88'
         },
         user: {id: 78}
       };
-      var res = {};
-      var ownSelf = checker.ownSelf('params.userId', false);
+      let res = {};
+      let ownSelf = checker.ownSelf('params.userId', false);
       ownSelf(req, res, function(error) {
         assert.ok(error instanceof Error);
         assert.equal('Resource not found.', error.message);
@@ -85,15 +85,15 @@ describe('helper.checker', function() {
     });
 
     it("指定错误, allowEmpty = true", function(done) {
-      var req = {
+      let req = {
         params: {
           userId: 88
         },
         user: {id: 78}
       };
-      var res = {};
-      var err = Error('不是您的资源，不能执行该操作');
-      var ownSelf = checker.ownSelf('params.userId', true, err);
+      let res = {};
+      let err = Error('不是您的资源，不能执行该操作');
+      let ownSelf = checker.ownSelf('params.userId', true, err);
       ownSelf(req, res, function(error) {
         assert.equal(err, error);
       });
@@ -116,11 +116,11 @@ describe('helper.checker', function() {
   describe('#privateSwitch', function() {
 
     it("未指定错误", function(done) {
-      var req = {
+      let req = {
         allowPrivateSwitch: function() { return false; }
       };
-      var res = {};
-      var privateSwitch = checker.privateSwitch('users');
+      let res = {};
+      let privateSwitch = checker.privateSwitch('users');
       privateSwitch(req, res, function(error) {
         assert.ok(error instanceof Error);
         assert.equal('Resource not found.', error.message);
@@ -142,12 +142,12 @@ describe('helper.checker', function() {
     });
 
     it("指定错误", function(done) {
-      var req = {
+      let req = {
         allowPrivateSwitch: function() { return false; }
       };
-      var res = {};
-      var err = Error('您没有得到私有客户端授权，不能执行该操作');
-      var privateSwitch = checker.privateSwitch('users', err);
+      let res = {};
+      let err = Error('您没有得到私有客户端授权，不能执行该操作');
+      let privateSwitch = checker.privateSwitch('users', err);
       privateSwitch(req, res, function(error) {
         assert.equal(err, error);
       });

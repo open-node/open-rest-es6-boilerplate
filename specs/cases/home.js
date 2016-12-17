@@ -18,4 +18,4 @@ module.exports = [{
   expects: {
     Status: 200
   }
-}]
+}];

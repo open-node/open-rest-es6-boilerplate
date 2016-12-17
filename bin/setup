@@ -1,22 +1,17 @@
 #! /usr/bin/env node
 
-var prompt = require('prompt');
-var fs     = require('fs');
-var async  = require('async');
-var rest   = require('open-rest');
-var config = require('../build/app/configs/base').default;
-var exec  = require('child_process').exec;
-var connection = null;
+const prompt = require('prompt');
+const fs     = require('fs');
+const path   = require('path');
+const async  = require('async');
+const rest   = require('open-rest');
+const config = require('../app/configs/base');
+const exec   = require('child_process').exec;
 
-//
-// Start the prompt
-//
-prompt.start();
+let connection = null;
 
-//
 // Get two properties from the user: username and email
-//
-var schema = {
+const schema = {
   properties: {
     "service.port": {
       description: "REST API service port",
@@ -72,7 +67,7 @@ var schema = {
   }
 };
 
-var getNodeEnv = function(callback) {
+const getNodeEnv = function(callback) {
   prompt.get({
     name: "NODE_ENV",
     description: "NODE_ENV",
@@ -82,7 +77,7 @@ var getNodeEnv = function(callback) {
   }, callback);
 };
 
-var getInputs = function(setting, callback) {
+const getInputs = function(setting, callback) {
   prompt.get(schema, function(error, result) {
     if (error) return callback(error);
     setting.conf = result;
@@ -90,25 +85,30 @@ var getInputs = function(setting, callback) {
   });
 };
 
-var confExists = function(setting, callback) {
-  var file = __dirname + '/../src/app/configs/config.' + setting.NODE_ENV + '.es';
+const confExists = function(setting, callback) {
+  let file = `${__dirname}/../app/configs/config.${setting.NODE_ENV}.js`;
   setting.file = file;
   if (!fs.existsSync(file)) return callback(null, setting);
   prompt.get({
     name: 'rewrite',
-    message: 'File `' + file + '` already exists,\n To continue the operation will rewrite it. yes or no?',
+    message: [
+      `File \`${path.resolve(file)}\` already exists,`,
+      'To continue the operation will rewrite it. yes or no?'
+    ].join('\n'),
     validator: /y[es]*|n[o]?/,
     warning: 'Must respond yes or no',
     default: 'no'
-  }, function(err, result) {
+  }, (err, result) => {
     if (err) return callback(err);
-    if (result.rewrite === 'no' || result.rewrite === 'n') return callback(Error('Config file already exists.'));
+    if ('no' === result.rewrite || 'n' === result.rewrite) {
+      return callback(Error('Config file already exists.'));
+    }
     callback(null, setting);
   });
 };
 
-var dbAuthCheck = function(setting, callback) {
-  var conf = setting.conf;
+const dbAuthCheck = function(setting, callback) {
+  let conf = setting.conf;
   connection = rest.mysql.createConnection({
     host: conf['db.host'],
     user: conf['db.user'],
@@ -120,57 +120,71 @@ var dbAuthCheck = function(setting, callback) {
     return callback(e);
   }
   setting.connection = connection;
-  connection.query("USE " + conf['db.name'], function(err, rows, fields) {
+  connection.query(`USE ${conf['db.name']}`, (err) => {
     // DATABASE non-exists
     if (err) return callback(null, setting);
     // DATABASE already exists
     prompt.get({
       name: 'dropdb',
-      message: 'db`' + conf['db.name'] + '` already exists,\n To continue the operation will drop it. yes or no?',
+      message: [
+        `db\`${conf['db.name']}\` already exists,`,
+        'To continue the operation will drop it. yes or no?'
+      ].join('\n'),
       validator: /y[es]*|n[o]?/,
       warning: 'Must respond yes or no',
       default: 'no'
-    }, function(err, result) {
+    }, (err, result) => {
       if (err) return callback(err);
-      if (result.dropdb === 'no' || result.dropdb === 'n') return callback(Error('Database already exists.'));
-      connection.query('DROP DATABASE IF EXISTS ' + conf['db.name'], function(err, rows, fields) {
+      if ('no' === result.dropdb || 'n' === result.dropdb) {
+        return callback(Error('Database already exists.'));
+      }
+      connection.query(`DROP DATABASE IF EXISTS ${conf['db.name']}`, (err) => {
         if (err) return callback(err);
         callback(null, setting);
       });
     });
-  })
+  });
 };
 
-var dbCreate = function(setting, callback) {
-  var conf = setting.conf;
-  var sql = 'CREATE DATABASE IF NOT EXISTS ' + conf['db.name'] + ' DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci';
-  setting.connection.query(sql, function(err, rows, fields) {
+const dbCreate = function(setting, callback) {
+  let conf = setting.conf;
+  let sql = [
+    `CREATE DATABASE IF NOT EXISTS ${conf['db.name']}`,
+    'DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci'
+  ].join(' ');
+  setting.connection.query(sql, (err) => {
     if (err) return callback(err);
     callback(null, setting);
-  })
+  });
 };
 
-var tableCreate = function(setting, callback) {
-  var conf = setting.conf
-    , strfile = __dirname + "/../src/app/configs/table.sql"
-    , datafile = __dirname + "/../src/app/configs/test-data.sql";
-  var command = [
-    "mysql -h" + conf['db.host'] + " -u" + conf['db.user'] + " -P " + conf['db.port'] + " -p'" + conf['db.pass'] + "' " + conf['db.name'] + " < " + strfile,
-    "mysql -h" + conf['db.host'] + " -u" + conf['db.user'] + " -P " + conf['db.port'] + " -p'" + conf['db.pass'] + "' " + conf['db.name'] + " < " + datafile,
+const tableCreate = function(setting, callback) {
+  const conf = setting.conf;
+  const strfile = `${__dirname}/../app/configs/table.sql`;
+  const datafile = `${__dirname}/../app/configs/test-data.sql`;
+  const mysqlAuth = [
+    `mysql -h${conf['db.host']}`,
+    `-u${conf['db.user']}`,
+    `-P${conf['db.port']}`,
+    `-p'${conf['db.pass']}'`
+  ].join(' ');
+  let command = [
+    `${mysqlAuth} ${conf['db.name']} < ${strfile}`,
+    `${mysqlAuth} ${conf['db.name']} < ${datafile}`,
   ].join('\n');
-  exec(command, function(error, stdout, stderr) {
+  exec(command, (error) => {
     if (error) return callback(error);
     callback(null, setting);
   });
 };
 
-var writeConf = function(setting, callback) {
-  var conf = setting.conf;
-  var contents = ["import config from './base';\n"];
-  for (var k in setting.conf) {
-    contents.push("config." + k + " = '" + conf[k] + "';");
+const writeConf = function(setting, callback) {
+  let conf = setting.conf;
+  let contents = ["const config = require('./base');\n"];
+  for (let k in setting.conf) {
+    contents.push(`config.${k} = '${conf[k]}';`);
   }
-  contents.push("\nexport default config;");
+  contents.push("\nmodule.exports = config;");
 
   try {
     fs.writeFileSync(setting.file, contents.join('\n'));
@@ -180,6 +194,9 @@ var writeConf = function(setting, callback) {
   callback(null, setting);
 };
 
+// Start the prompt
+prompt.start();
+
 async.waterfall([
   getNodeEnv,
   confExists,
@@ -188,7 +205,7 @@ async.waterfall([
   dbCreate,
   tableCreate,
   writeConf
-], function (error, setting) {
+], (error) => {
   if (connection && connection.end) connection.end();
   if (error) {
     console.error(error.message);

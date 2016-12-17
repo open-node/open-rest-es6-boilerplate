@@ -1,14 +1,13 @@
-var assert    = require('assert')
-  , rest      = require('open-rest')
-  , U         = require('../build/app/lib/utils').default
-  , middle    = require('../build/app/middle-wares/user').default;
+const assert    = require('assert');
+const U         = require('../app/lib/utils');
+const middle    = require('../app/middle-wares/user');
 
 describe('middle user', function() {
 
   describe('#noraml', function() {
 
     it('req.privateSwitchs undefined', function(done) {
-      var req = {
+      let req = {
         headers: {
           'x-auth-token': undefined
         },
@@ -23,9 +22,9 @@ describe('middle user', function() {
         }
       };
 
-      var res = {};
+      let res = {};
 
-      var allowGuestAccessPaths = [
+      let allowGuestAccessPaths = [
         'GET /users'
       ];
 
@@ -48,7 +47,7 @@ describe('middle user', function() {
     });
 
     it('req.privateSwitchs defined', function(done) {
-      var req = {
+      let req = {
         headers: {
           'x-auth-token': undefined
         },
@@ -63,9 +62,9 @@ describe('middle user', function() {
         }
       };
 
-      var res = {};
+      let res = {};
 
-      var allowGuestAccessPaths = [
+      let allowGuestAccessPaths = [
         'GET /users'
       ];
 
@@ -84,5 +83,3 @@ describe('middle user', function() {
   });
 
 });
-
-

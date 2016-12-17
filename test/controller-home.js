@@ -1,14 +1,12 @@
-var assert    = require('assert')
-  , rest      = require('open-rest')
-  , U         = require('../build/app/lib/utils')
-  , home      = require('../build/app/controllers/home');
+const assert    = require('assert');
+const home      = require('../app/controllers/home');
 
 describe('controllers home', function() {
 
   describe('#index', function() {
 
     it('req.username', function(done) {
-      var req = {
+      let req = {
         user: {
           id: 1,
           username: 'Redstone Zhao'
@@ -18,7 +16,7 @@ describe('controllers home', function() {
         _remoteIp: '127.0.0.1',
         privateSwitchs: '*'
       };
-      var res = {
+      let res = {
         send: function(data) {
           assert.deepEqual([
             'GET /users'
@@ -33,7 +31,7 @@ describe('controllers home', function() {
     });
 
     it('Guest', function(done) {
-      var req = {
+      let req = {
         user: {
           id: 0
         },
@@ -44,7 +42,7 @@ describe('controllers home', function() {
           'users'
         ]
       };
-      var res = {
+      let res = {
         send: function(data) {
           assert.deepEqual([
             'GET /users'

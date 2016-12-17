@@ -1,14 +1,12 @@
-var assert    = require('assert')
-  , rest      = require('open-rest')
-  , U         = require('../build/app/lib/utils')
-  , middle    = require('../build/app/middle-wares/private-client-check').default;
+const assert    = require('assert');
+const middle    = require('../app/middle-wares/private-client-check');
 
 describe('middle private-cient-check', function() {
 
   describe('#noraml', function() {
 
     it('token exists', function(done) {
-      var req = {
+      let req = {
         headers: {
           'x-auth-token': 'Test token'
         },
@@ -18,13 +16,13 @@ describe('middle private-cient-check', function() {
         params: {}
       };
 
-      var res = {};
+      let res = {};
 
-      var proxyIps = [
+      let proxyIps = [
         '127.0.0.1'
       ];
 
-      var privateIps = {
+      let privateIps = {
         '192.168.199.188': ['users']
       };
 
@@ -38,7 +36,7 @@ describe('middle private-cient-check', function() {
     });
 
     it('token non-exists', function(done) {
-      var req = {
+      let req = {
         headers: {},
         connection: {
           remoteAddress: '192.168.199.188'
@@ -46,13 +44,13 @@ describe('middle private-cient-check', function() {
         params: {}
       };
 
-      var res = {};
+      let res = {};
 
-      var proxyIps = [
+      let proxyIps = [
         '127.0.0.1'
       ];
 
-      var privateIps = {
+      let privateIps = {
         '192.168.199.188': ['users']
       };
 
@@ -67,7 +65,7 @@ describe('middle private-cient-check', function() {
     });
 
     it('token non-exists, switchs unset', function(done) {
-      var req = {
+      let req = {
         headers: {},
         connection: {
           remoteAddress: '192.168.199.188'
@@ -75,13 +73,13 @@ describe('middle private-cient-check', function() {
         params: {}
       };
 
-      var res = {};
+      let res = {};
 
-      var proxyIps = [
+      let proxyIps = [
         '127.0.0.1'
       ];
 
-      var privateIps = {
+      let privateIps = {
         '192.168.199.188': undefined
       };
 
@@ -99,7 +97,7 @@ describe('middle private-cient-check', function() {
     });
 
     it('token non-exists, switchs *', function(done) {
-      var req = {
+      let req = {
         headers: {},
         connection: {
           remoteAddress: '192.168.199.188'
@@ -107,13 +105,13 @@ describe('middle private-cient-check', function() {
         params: {}
       };
 
-      var res = {};
+      let res = {};
 
-      var proxyIps = [
+      let proxyIps = [
         '127.0.0.1'
       ];
 
-      var privateIps = {
+      let privateIps = {
         '192.168.199.188': '*'
       };
 
@@ -134,4 +132,3 @@ describe('middle private-cient-check', function() {
   });
 
 });
-

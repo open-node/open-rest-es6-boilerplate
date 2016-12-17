@@ -1,7 +1,7 @@
-var U     = require('../../build/app/lib/utils').default;
-var enabledToken = '';
+const U     = require('../../app/lib/utils');
 
-cases = [{
+let enabledToken = '';
+let cases = [{
   name: '测试ID = 1的初始用户的登陆',
   uri: '/session',
   verb: 'post',
@@ -64,7 +64,7 @@ cases = [{
       }
     }
   };
-}, function(last) {
+}, function() {
   return {
     name: '测试用户退出接口，销毁刚才的 token',
     uri: '/session',
@@ -76,7 +76,7 @@ cases = [{
       Status: 204
     }
   };
-}, function(last) {
+}, function() {
   return {
     name: '被销毁的 token 无法继续请求 session 接口',
     uri: '/session',

@@ -1,14 +1,14 @@
-var assert  = require('assert')
-  , U       = require('../build/app/lib/utils').default;
+const assert  = require('assert');
+const U       = require('../app/lib/utils');
 
-var base64image = 'data:image/gif;base64,R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=';
+const base64image = 'data:image/gif;base64,R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=';
 
 describe('Utils', function() {
 
-  var privateIpMerge = U.privateIpMerge;
+  const privateIpMerge = U.privateIpMerge;
 
   describe('#privateIpMerge', function() {
-    var switchs = {
+    const switchs = {
       // 1. adServing 投放服务器5
       adServing: ['campaign', 'campaigns', 'placements', 'creatives', 'advertisements'],
       // 2. 采集扩充机器
@@ -25,9 +25,9 @@ describe('Utils', function() {
           'campaigns', 'placements', 'creatives'
         ]
       }, privateIpMerge(switchs, {
-          updateClickDict: [
-            '10.20.20.14'
-          ]
+        updateClickDict: [
+          '10.20.20.14'
+        ]
       }));
       done();
     });
@@ -43,13 +43,13 @@ describe('Utils', function() {
           'campaign', 'campaigns', 'placements', 'creatives', 'advertisements'
         ]
       }, privateIpMerge(switchs, {
-          v5Databank: [
-            '10.20.20.14',
-            '10.20.20.146'
-          ],
-          adServing: [
-            '10.20.20.153'
-          ]
+        v5Databank: [
+          '10.20.20.14',
+          '10.20.20.146'
+        ],
+        adServing: [
+          '10.20.20.153'
+        ]
       }));
       done();
     });
@@ -59,12 +59,12 @@ describe('Utils', function() {
           'campaigns','placements','creatives','keywords','campaign','advertisements'
         ]
       }, privateIpMerge(switchs, {
-          v5Databank: [
-            '10.20.20.14'
-          ],
-          adServing: [
-            '10.20.20.14'
-          ]
+        v5Databank: [
+          '10.20.20.14'
+        ],
+        adServing: [
+          '10.20.20.14'
+        ]
       }));
       done();
     });
@@ -80,14 +80,14 @@ describe('Utils', function() {
           'campaign','campaigns','placements','creatives','advertisements'
         ]
       }, privateIpMerge(switchs, {
-          v5Databank: [
-            '10.20.20.14',
-            '10.20.20.146'
-          ],
-          adServing: [
-            '10.20.20.14',
-            '10.20.20.153'
-          ]
+        v5Databank: [
+          '10.20.20.14',
+          '10.20.20.146'
+        ],
+        adServing: [
+          '10.20.20.14',
+          '10.20.20.153'
+        ]
       }));
       done();
     });
@@ -95,9 +95,9 @@ describe('Utils', function() {
       assert.deepEqual({
         '10.20.20.143': '*'
       }, privateIpMerge(switchs, {
-          '*': [
-            '10.20.20.143'
-          ]
+        '*': [
+          '10.20.20.143'
+        ]
       }));
       done();
     });
@@ -106,19 +106,18 @@ describe('Utils', function() {
   describe('#mkdirp', function() {
 
     it('target dir exists', function(done) {
-      var dir = __dirname;
-      U.mkdirp(dir);
+      U.mkdirp(__dirname);
 
-      assert.ok(U.fs.existsSync(dir));
+      assert.ok(U.fs.existsSync(__dirname));
 
       done();
     });
 
     it('parent dir exists', function(done) {
-      var dir = __dirname + '/test-mkdirp';
+      const dir = __dirname + '/test-mkdirp';
       if (U.fs.existsSync(dir)) U.fs.rmdirSync(dir);
 
-      U.mkdirp(dir)
+      U.mkdirp(dir);
 
       assert.ok(U.fs.existsSync(dir));
 
@@ -128,12 +127,12 @@ describe('Utils', function() {
     });
 
     it('parent dir non-exists', function(done) {
-      var dir = __dirname + '/test-mkdirp-non-exists/test';
-      var parent = __dirname + '/test-mkdirp-non-exists';
+      const dir = __dirname + '/test-mkdirp-non-exists/test';
+      const parent = __dirname + '/test-mkdirp-non-exists';
       if (U.fs.existsSync(dir)) U.fs.rmdirSync(dir);
       if (U.fs.existsSync(parent)) U.fs.rmdirSync(parent);
 
-      U.mkdirp(dir)
+      U.mkdirp(dir);
 
       assert.ok(U.fs.existsSync(dir));
       U.fs.rmdirSync(dir);
@@ -163,7 +162,7 @@ describe('Utils', function() {
     });
 
     it('dataString set, match length is 3', function(done) {
-      var ret = U.decodeBase64Image(base64image);
+      const ret = U.decodeBase64Image(base64image);
       assert.equal('image/gif', ret.type);
       assert.equal('R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=', ret.data.toString('base64'));
 

@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   /** web service 的一些信息,主要提供给 restify.createServer 使用 */
   service: {
     name: 'open-rest boilerplate service',
@@ -11,13 +11,13 @@ export default {
     name: 'open-rest-es-boilerplate',
     streams: [{
       level: 'info',
-      path: `${__dirname}/../../../storage/logs/info.log`
+      path: `${__dirname}/../../storage/logs/info.log`
     }, {
       level: 'error',
-      path: `${__dirname}/../../../storage/logs/error.log`
+      path: `${__dirname}/../../storage/logs/error.log`
     }, {
       level: 'warn',
-      path: `${__dirname}/../../../storage/logs/warn.log`
+      path: `${__dirname}/../../storage/logs/warn.log`
     }]
   },
 
@@ -79,7 +79,7 @@ export default {
   },
 
   /** accessLog 路径 */
-  accessLog: `${__dirname}/../../../storage/logs/access.log`,
+  accessLog: `${__dirname}/../../storage/logs/access.log`,
 
   /** 允许游客访问的路由路径 */
   allowGuestAccessPaths: [

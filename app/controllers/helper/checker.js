@@ -1,5 +1,5 @@
-import errors from '../../lib/errors';
-import U      from '../../lib/utils';
+const errors = require('../../lib/errors');
+const U      = require('../../lib/utils');
 
 /**
  * checker 所有的方法都可能随时会调用next error
@@ -7,7 +7,7 @@ import U      from '../../lib/utils';
  */
 
 /** 检测当前用户是否为管理员 */
-export const sysAdmin = (error) => {
+const sysAdmin = (error) => {
   if (!(error instanceof Error)) error = errors.notFound(error);
   return (req, res, next) => {
     if (req.isAdmin === true) return next();
@@ -16,10 +16,10 @@ export const sysAdmin = (error) => {
 };
 
 /**  检测资源是否属于自己 */
-export const ownSelf = (keyPath, allowEmpty, error) => {
+const ownSelf = (keyPath, allowEmpty, error) => {
   if (!(error instanceof Error)) error = errors.notFound(error);
   return (req, res, next) => {
-    let id = +U._.get(req, keyPath) || 0
+    let id = +U._.get(req, keyPath) || 0;
     if (allowEmpty && (id === 0)) return next();
     if (req.user.id === id) return next();
     return next(error);
@@ -27,7 +27,7 @@ export const ownSelf = (keyPath, allowEmpty, error) => {
 };
 
 /** 检测私有客户端功能 */
-export const privateSwitch = (privateSwitch, error) => {
+const privateSwitch = (privateSwitch, error) => {
   if (!(error instanceof Error)) error = errors.notFound(error);
   return (req, res, next) => {
     /** 判断是否是私有ip客户端，并且允许私有客户端直接访问 */
@@ -35,3 +35,5 @@ export const privateSwitch = (privateSwitch, error) => {
     return next(error);
   };
 };
+
+module.exports = {sysAdmin, ownSelf, privateSwitch};

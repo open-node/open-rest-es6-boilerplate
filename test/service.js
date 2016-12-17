@@ -1,13 +1,13 @@
-var assert      = require('assert')
-  , specs       = require('../specs/api_spec');
+const assert      = require('assert');
+const specs       = require('../specs/api_spec');
 
-require('../build');
+require('../');
 
 describe('apitest', function() {
 
   describe('#run api test case', function() {
 
-    var stats = {};
+    let stats = {};
     specs(function(s) {
       Object.assign(stats, s);
     });

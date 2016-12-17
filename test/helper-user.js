@@ -1,12 +1,12 @@
-var assert    = require('assert')
-  , rest      = require('open-rest')
-  , U         = require('../build/app/lib/utils')
-  , Sequelize = rest.Sequelize
-  , user      = require('../build/app/controllers/helper/user');
+const assert    = require('assert');
+const rest      = require('open-rest');
+const U         = require('../app/lib/utils');
+const Sequelize = rest.Sequelize;
+const user      = require('../app/controllers/helper/user');
 
-var sequelize = new Sequelize();
+let sequelize = new Sequelize();
 
-var checkPassSuccess = function(user) {
+let checkPassSuccess = function(user) {
   return function(req, email, password, callback) {
     setTimeout(function() {
       callback(null, user);
@@ -14,7 +14,7 @@ var checkPassSuccess = function(user) {
   };
 };
 
-var checkPassError = function(message) {
+let checkPassError = function(message) {
   return function(req, email, password, callback) {
     setTimeout(function() {
       callback(Error(message));
@@ -22,7 +22,7 @@ var checkPassError = function(message) {
   };
 };
 
-var addAuthError = function(message) {
+let addAuthError = function(message) {
   return function(user, realIp, callback) {
     setTimeout(function() {
       callback(Error(message));
@@ -30,7 +30,7 @@ var addAuthError = function(message) {
   };
 };
 
-var addAuthSuccess = function(auth) {
+let addAuthSuccess = function(auth) {
   return function(user, realIp, callback) {
     setTimeout(function() {
       callback(null, auth);
@@ -38,7 +38,7 @@ var addAuthSuccess = function(auth) {
   };
 };
 
-var readUserByTokenError = function(message) {
+let readUserByTokenError = function(message) {
   return function(token, callback) {
     setTimeout(function() {
       callback(Error(message));
@@ -46,7 +46,7 @@ var readUserByTokenError = function(message) {
   };
 };
 
-var findOnePromiseError = function(message) {
+let findOnePromiseError = function(message) {
   return function() {
     return new Promise(function(resolve, reject) {
       setTimeout(function() {
@@ -56,9 +56,9 @@ var findOnePromiseError = function(message) {
   };
 };
 
-var findOnePromiseSuccess = function(user) {
+let findOnePromiseSuccess = function(user) {
   return function() {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function(resolve) {
       setTimeout(function() {
         resolve(user);
       }, 10);
@@ -66,7 +66,7 @@ var findOnePromiseSuccess = function(user) {
   };
 };
 
-var models = {
+let models = {
   auth: sequelize.define('book', {
     id: {
       type: Sequelize.INTEGER.UNSIGNED,
@@ -90,7 +90,7 @@ models.auth.readUserByToken = {
 };
 
 models.auth.findOne = function() {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function(resolve) {
     setTimeout(function() {
       return resolve();
     }, 10);
@@ -102,29 +102,29 @@ describe('helper.user', function() {
   describe('#logout', function() {
 
     it("Auth.readUserByToken.removeKey non-exists", function(done) {
-      var uModel = U.default.model;
-      U.default.model = function(name) {
+      let uModel = U.model;
+      U.model = function(name) {
         return models[name];
       };
 
-      var req = {
+      let req = {
         headers: {
           'X-Auth-Token': 'THIS IS A TEST TOKEN'
         },
         params: {}
       };
-      var res = {
+      let res = {
         send: function(statusCode) {
           assert.equal(204, statusCode);
         }
       };
 
-      var logout = user.logout();
+      let logout = user.logout();
 
       logout(req, res, function(error) {
         assert.equal(null, error);
 
-        U.default.model = uModel;
+        U.model = uModel;
         done();
       });
 
@@ -135,17 +135,17 @@ describe('helper.user', function() {
   describe('#login', function() {
 
     it("User.checkPass error", function(done) {
-      var uModel = U.default.model;
-      U.default.model = function(name) {
+      let uModel = U.model;
+      U.model = function(name) {
         return models[name];
       };
 
       models.user.checkPass = checkPassError('Hello, error');
 
-      var req = {params: {}};
-      var res = {};
+      let req = {params: {}};
+      let res = {};
 
-      var login = user.login();
+      let login = user.login();
 
       login(req, res, function(error) {
         assert.ok(error);
@@ -158,49 +158,49 @@ describe('helper.user', function() {
         }, error.body);
         assert.equal('NotAuthorized', error.restCode);
 
-        U.default.model = uModel;
+        U.model = uModel;
         done();
       });
 
     });
 
     it("Auth.addAuth error", function(done) {
-      var uModel = U.default.model;
-      var _user = {
+      let uModel = U.model;
+      let _user = {
         id: 1,
         name: 'Redstone Zhao'
       };
-      U.default.model = function(name) {
+      U.model = function(name) {
         return models[name];
       };
 
       models.user.checkPass = checkPassSuccess(_user);
       models.auth.addAuth = addAuthError('Hello, add auth error');
 
-      var req = {params: {}};
-      var res = {};
+      let req = {params: {}};
+      let res = {};
 
-      var login = user.login();
+      let login = user.login();
 
       login(req, res, function(error) {
         assert.ok(error);
         assert.ok(error instanceof Error);
         assert.equal('Hello, add auth error', error.message);
 
-        U.default.model = uModel;
+        U.model = uModel;
         done();
       });
 
     });
 
     it("Auth.readUserByToken error", function(done) {
-      var uModel = U.default.model;
-      var _user = {
+      let uModel = U.model;
+      let _user = {
         id: 1,
         name: 'Redstone Zhao'
       };
-      var _auth = {};
-      U.default.model = function(name) {
+      let _auth = {};
+      U.model = function(name) {
         return models[name];
       };
 
@@ -208,17 +208,17 @@ describe('helper.user', function() {
       models.auth.addAuth = addAuthSuccess(_auth);
       models.auth.readUserByToken = readUserByTokenError('Hi, read user by token error');
 
-      var req = {params: {}};
-      var res = {};
+      let req = {params: {}};
+      let res = {};
 
-      var login = user.login();
+      let login = user.login();
 
       login(req, res, function(error) {
         assert.ok(error);
         assert.ok(error instanceof Error);
         assert.equal('Hi, read user by token error', error.message);
 
-        U.default.model = uModel;
+        U.model = uModel;
         done();
       });
 
@@ -229,15 +229,15 @@ describe('helper.user', function() {
   describe('#checkPass', function() {
 
     it("req.user undefined", function(done) {
-      var uModel = U.default.model;
-      U.default.model = function(name) {
+      let uModel = U.model;
+      U.model = function(name) {
         return models[name];
       };
 
-      var req = {params: {}};
-      var res = {};
+      let req = {params: {}};
+      let res = {};
 
-      var checkPass = user.checkPass(['email', 'password'], false, true);
+      let checkPass = user.checkPass(['email', 'password'], false, true);
 
       checkPass(req, res, function(error) {
         assert.ok(error);
@@ -245,19 +245,19 @@ describe('helper.user', function() {
         assert.equal('Resource not found.', error.message);
         assert.equal(404, error.statusCode);
 
-        U.default.model = uModel;
+        U.model = uModel;
         done();
       });
 
     });
 
     it("req.user undefined, ignoreAdmin = true, modifyUser = true", function(done) {
-      var uModel = U.default.model;
-      U.default.model = function(name) {
+      let uModel = U.model;
+      U.model = function(name) {
         return models[name];
       };
 
-      var req = {
+      let req = {
         params: {
           id: '998'
         },
@@ -266,26 +266,26 @@ describe('helper.user', function() {
           id: 999
         }
       };
-      var res = {};
+      let res = {};
 
-      var checkPass = user.checkPass(['email', 'password'], true, true);
+      let checkPass = user.checkPass(['email', 'password'], true, true);
 
       checkPass(req, res, function(error) {
         assert.equal(null, error);
 
-        U.default.model = uModel;
+        U.model = uModel;
         done();
       });
 
     });
 
     it("req.user undefined, ignoreAdmin = true, modifyUser = true, ownSelf", function(done) {
-      var uModel = U.default.model;
-      U.default.model = function(name) {
+      let uModel = U.model;
+      U.model = function(name) {
         return models[name];
       };
 
-      var req = {
+      let req = {
         params: {
           id: '999'
         },
@@ -294,26 +294,26 @@ describe('helper.user', function() {
           id: 999
         }
       };
-      var res = {};
+      let res = {};
 
-      var checkPass = user.checkPass(['email', 'password'], true, true);
+      let checkPass = user.checkPass(['email', 'password'], true, true);
 
       checkPass(req, res, function(error) {
         assert.equal(null, error);
 
-        U.default.model = uModel;
+        U.model = uModel;
         done();
       });
 
     });
 
     it("req.user undefined, ignoreAdmin = false, modifyUser = true, ownSelf", function(done) {
-      var uModel = U.default.model;
-      U.default.model = function(name) {
+      let uModel = U.model;
+      U.model = function(name) {
         return models[name];
       };
 
-      var req = {
+      let req = {
         params: {
           id: '999'
         },
@@ -322,26 +322,26 @@ describe('helper.user', function() {
           id: 999
         }
       };
-      var res = {};
+      let res = {};
 
-      var checkPass = user.checkPass(['email', 'password'], false, true);
+      let checkPass = user.checkPass(['email', 'password'], false, true);
 
       checkPass(req, res, function(error) {
         assert.equal(null, error);
 
-        U.default.model = uModel;
+        U.model = uModel;
         done();
       });
 
     });
 
     it("req.user undefined, ignoreAdmin = false, modifyUser = true, origPass unset", function(done) {
-      var uModel = U.default.model;
-      U.default.model = function(name) {
+      let uModel = U.model;
+      U.model = function(name) {
         return models[name];
       };
 
-      var req = {
+      let req = {
         params: {
           id: '999',
           email: '13740080@qq.com'
@@ -351,9 +351,9 @@ describe('helper.user', function() {
           id: 999
         }
       };
-      var res = {};
+      let res = {};
 
-      var checkPass = user.checkPass(['email', 'password'], false, true);
+      let checkPass = user.checkPass(['email', 'password'], false, true);
 
       checkPass(req, res, function(error) {
         assert.ok(error);
@@ -366,19 +366,19 @@ describe('helper.user', function() {
         }, error.body);
         assert.equal('NotAuthorized', error.restCode);
 
-        U.default.model = uModel;
+        U.model = uModel;
         done();
       });
 
     });
 
     it("origPass set, User.checkPass error", function(done) {
-      var uModel = U.default.model;
-      U.default.model = function(name) {
+      let uModel = U.model;
+      U.model = function(name) {
         return models[name];
       };
 
-      var req = {
+      let req = {
         params: {
           id: '999',
           email: '13740080@qq.com',
@@ -389,9 +389,9 @@ describe('helper.user', function() {
           id: 999
         }
       };
-      var res = {};
+      let res = {};
 
-      var checkPass = user.checkPass(['email', 'password'], false, true);
+      let checkPass = user.checkPass(['email', 'password'], false, true);
       models.user.checkPass = checkPassError('Hello, error');
 
       checkPass(req, res, function(error) {
@@ -404,7 +404,7 @@ describe('helper.user', function() {
           message: 'Hello, error'
         }, error.body);
         assert.equal('NotAuthorized', error.restCode);
-        U.default.model = uModel;
+        U.model = uModel;
 
         done();
       });
@@ -412,15 +412,15 @@ describe('helper.user', function() {
     });
 
     it("origPass set, User.checkPass success", function(done) {
-      var uModel = U.default.model;
-      U.default.model = function(name) {
+      let uModel = U.model;
+      U.model = function(name) {
         return models[name];
       };
-      var _user = {
+      let _user = {
         id: 1,
         name: 'Redstone Zhao'
       };
-      var req = {
+      let req = {
         params: {
           id: '999',
           email: '13740080@qq.com',
@@ -431,16 +431,16 @@ describe('helper.user', function() {
           id: 999
         }
       };
-      var res = {};
+      let res = {};
 
-      var checkPass = user.checkPass(['email', 'password'], false, true);
+      let checkPass = user.checkPass(['email', 'password'], false, true);
       models.user.checkPass = checkPassSuccess(_user);
 
       checkPass(req, res, function(error) {
 
         assert.equal(null, error);
 
-        U.default.model = uModel;
+        U.model = uModel;
         done();
       });
 
@@ -451,36 +451,36 @@ describe('helper.user', function() {
   describe('#findOrCreate', function() {
 
     it('req.hooks.user exists', function(done) {
-      var uModel = U.default.model;
-      U.default.model = function(name) {
+      let uModel = U.model;
+      U.model = function(name) {
         return models[name];
       };
-      var req = {
+      let req = {
         hooks: {user: {}},
         params: {}
       };
-      var res = {};
-      var findOrCreate = user.findOrCreate('user');
+      let res = {};
+      let findOrCreate = user.findOrCreate('user');
       findOrCreate(req, res, function(error) {
         assert.equal(null, error);
 
-        U.default.model = uModel;
+        U.model = uModel;
         done();
       });
 
     });
 
     it('req.hooks.user non-exists', function(done) {
-      var uModel = U.default.model;
-      U.default.model = function(name) {
+      let uModel = U.model;
+      U.model = function(name) {
         return models[name];
       };
-      var req = {
+      let req = {
         hooks: {user: undefined},
         params: {}
       };
-      var res = {};
-      var findOrCreate = user.findOrCreate('user');
+      let res = {};
+      let findOrCreate = user.findOrCreate('user');
       findOrCreate(req, res, function(error) {
         assert.ok(error);
         assert.ok(error instanceof Error);
@@ -493,89 +493,89 @@ describe('helper.user', function() {
         }, error.body);
         assert.equal('MissingParameter', error.restCode);
 
-        U.default.model = uModel;
+        U.model = uModel;
         done();
       });
     });
 
     it('req.hooks.user non-exists User.findOne error', function(done) {
-      var uModel = U.default.model;
-      U.default.model = function(name) {
+      let uModel = U.model;
+      U.model = function(name) {
         return models[name];
       };
-      var req = {
+      let req = {
         hooks: {user: undefined},
         params: {
           email: '13740080@qq.com'
         }
       };
-      var res = {};
-      var findOrCreate = user.findOrCreate('user');
+      let res = {};
+      let findOrCreate = user.findOrCreate('user');
       models.user.findOne = findOnePromiseError('Hi, user find one error');
       findOrCreate(req, res, function(error) {
         assert.ok(error);
         assert.ok(error instanceof Error);
         assert.equal('Hi, user find one error', error.message);
 
-        U.default.model = uModel;
+        U.model = uModel;
         done();
       });
     });
 
     it('req.hooks.user non-exists User.findOne success, user exists', function(done) {
-      var uModel = U.default.model;
-      U.default.model = function(name) {
+      let uModel = U.model;
+      U.model = function(name) {
         return models[name];
       };
-      var req = {
+      let req = {
         hooks: {user: undefined},
         params: {
           email: '13740080@qq.com'
         }
       };
-      var _user = {
+      let _user = {
         id: 1,
         name: 'Redstone Zhao'
       };
-      var res = {
+      let res = {
         header: function(key, value) {
           assert.equal('X-Content-System-User', key);
           assert.equal('exists', value);
         }
       };
-      var findOrCreate = user.findOrCreate('user');
+      let findOrCreate = user.findOrCreate('user');
       models.user.findOne = findOnePromiseSuccess(_user);
       findOrCreate(req, res, function(error) {
         assert.equal(null, error);
         assert.equal(1, req.params.userId);
         assert.equal(_user, req.hooks.user);
 
-        U.default.model = uModel;
+        U.model = uModel;
         done();
       });
     });
 
     it('req.hooks.user non-exists User.findOne success, user non-exists, name exists, beforeAdd error', function(done) {
-      var uModel = U.default.model;
-      U.default.model = function(name) {
+      let uModel = U.model;
+      U.model = function(name) {
         return models[name];
       };
-      var req = {
+      let req = {
         hooks: {user: undefined},
         params: {
           email: '13740080@qq.com'
         }
       };
-      var res = {
+      let res = {
         header: function(key, value) {
           assert.equal('X-Content-System-User', key);
           assert.equal('exists', value);
         }
       };
-      var findOrCreate = user.findOrCreate('user');
+      let findOrCreate = user.findOrCreate('user');
       models.user.findOne = findOnePromiseSuccess(null);
-      U.default.rest.helper.rest = {};
-      U.default.rest.helper.rest.beforeAdd = function() {
+      U.rest.helper.rest = {};
+      U.rest.helper.rest.beforeAdd = function() {
         return function(req, res, next) {
           return next(Error('Before add error'));
         };
@@ -585,32 +585,32 @@ describe('helper.user', function() {
         assert.ok(error instanceof Error);
         assert.equal('Before add error', error.message);
 
-        U.default.model = uModel;
+        U.model = uModel;
         done();
       });
     });
 
     it('req.hooks.user non-exists User.findOne success, user non-exists, name non-exists, beforeAdd success', function(done) {
-      var uModel = U.default.model;
-      U.default.model = function(name) {
+      let uModel = U.model;
+      U.model = function(name) {
         return models[name];
       };
-      var req = {
+      let req = {
         hooks: {user: undefined},
         params: {
           email: '13740080@qq.com'
         }
       };
-      var res = {
+      let res = {
         header: function(key, value) {
           assert.equal('X-Content-System-User', key);
           assert.equal('added', value);
         }
       };
-      var findOrCreate = user.findOrCreate('user');
+      let findOrCreate = user.findOrCreate('user');
       models.user.findOne = findOnePromiseSuccess(null);
-      U.default.rest.helper.rest = {};
-      U.default.rest.helper.rest.beforeAdd = function() {
+      U.rest.helper.rest = {};
+      U.rest.helper.rest.beforeAdd = function() {
         return function(req, res, next) {
           req.hooks.user = {
             id: 9999,
@@ -627,33 +627,33 @@ describe('helper.user', function() {
           name: 'Redstone Zhao'
         }, req.hooks.user);
 
-        U.default.model = uModel;
+        U.model = uModel;
         done();
       });
     });
 
     it('req.hooks.user non-exists User.findOne success, user non-exists, name exists, beforeAdd success', function(done) {
-      var uModel = U.default.model;
-      U.default.model = function(name) {
+      let uModel = U.model;
+      U.model = function(name) {
         return models[name];
       };
-      var req = {
+      let req = {
         hooks: {user: undefined},
         params: {
           email: '13740080@qq.com',
           name: 'Redstone Zhao'
         }
       };
-      var res = {
+      let res = {
         header: function(key, value) {
           assert.equal('X-Content-System-User', key);
           assert.equal('added', value);
         }
       };
-      var findOrCreate = user.findOrCreate('user');
+      let findOrCreate = user.findOrCreate('user');
       models.user.findOne = findOnePromiseSuccess(null);
-      U.default.rest.helper.rest = {};
-      U.default.rest.helper.rest.beforeAdd = function() {
+      U.rest.helper.rest = {};
+      U.rest.helper.rest.beforeAdd = function() {
         return function(req, res, next) {
           req.hooks.user = {
             id: 9999,
@@ -670,7 +670,7 @@ describe('helper.user', function() {
           name: 'Redstone Zhao'
         }, req.hooks.user);
 
-        U.default.model = uModel;
+        U.model = uModel;
         done();
       });
     });

@@ -1,4 +1,4 @@
-import U      from '../lib/utils';
+const U = require('../lib/utils');
 
 /** 直接拒绝 */
 const noAllow = () => false;
@@ -14,13 +14,13 @@ const checker = (switchs) => {
   };
 };
 
-export default (proxyIps, privateIps) => {
+module.exports = (proxyIps, privateIps) => {
   return (req, res, next) => {
     req._remoteIp = U.remoteIp(req);
     req._clientIp = U.clientIp(req);
     req._realIp = U.realIp(req, proxyIps);
     if (U.getToken(req)) {
-      req.allowPrivateSwitch = noAllow
+      req.allowPrivateSwitch = noAllow;
     } else {
       req.privateSwitchs = privateIps[req._realIp];
       req.allowPrivateSwitch = checker(req.privateSwitchs);

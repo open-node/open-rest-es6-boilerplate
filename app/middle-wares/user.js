@@ -1,4 +1,4 @@
-import U          from '../lib/utils';
+const U = require('../lib/utils');
 
 const PRIVATEIPGUEST = {
   id: 0,
@@ -12,14 +12,14 @@ const GUEST = {
 
 const NOTAUTHORIZEDERROR = U.rest.errors.notAuth();
 
-export default (allowGuestAccessPaths) => {
+module.exports = (allowGuestAccessPaths) => {
   const Auth = U.model('auth');
   const checkGuestAccess = U._.memoize((apiPath) => {
     return allowGuestAccessPaths.indexOf(apiPath) > -1;
   });
 
   return (req, res, next) => {
-    var token = U.getToken(req);
+    let token = U.getToken(req);
     if (!token) {
       /** 游客允许访问处理逻辑 */
       if (checkGuestAccess(`${req.method} ${req.route.path}`)) {

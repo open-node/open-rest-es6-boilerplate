@@ -1,4 +1,4 @@
-import utils from '../../lib/utils';
+const utils = require('../../lib/utils');
 
 /**
  * 这里将IP私有客户端的权限大概归类为一下几种，

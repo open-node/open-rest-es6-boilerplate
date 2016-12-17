@@ -1,9 +1,9 @@
-var _ = require('lodash');
+const _ = require('lodash');
 
 module.exports = function(config) {
   return {
     name: '这是一个初始化测试',
-    urlRoot: "http://127.0.0.1:" + config.service.port,
+    urlRoot: `http://127.0.0.1:${config.service.port}`,
     cases: require('./cases'),
     hooks: {
       done: function() {

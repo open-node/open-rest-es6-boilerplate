@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   /** 分页设定 */
   pagination: {
     maxResults: 10,

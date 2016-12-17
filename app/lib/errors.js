@@ -1,6 +1,6 @@
-import U from './utils';
+const U = require('./utils');
 
-export default Object.assign({}, U.rest.errors, {
+module.exports = Object.assign({}, U.rest.errors, {
   /**
    * here define your error
    * error1: (msg) =>

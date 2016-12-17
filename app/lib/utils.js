@@ -1,6 +1,6 @@
-import pkg     from  '../../../package'
-import path    from  'path'
-import fs      from  'fs'
+const pkg   = require('../../package');
+const path  = require('path');
+const fs    = require('fs');
 
 /**
  * 以下是项目所依赖的库包
@@ -10,7 +10,7 @@ import fs      from  'fs'
  * 2. 当某个模块需要替换的时候不至于要替换n个地方
  * 3. 未完待续
  */
-var U = {};
+let U = {};
 for (let k in pkg.dependencies) {
   /** 包名的中划线转成驼峰，方便通过点(.)来操作 */
   U[k.replace(/(\-\w)/g, (m) => m[1].toUpperCase())] = require(k);
@@ -21,9 +21,11 @@ U.rest    = U.openRest;
 U._       = U.lodash;
 U.cached  = U.openCache;
 
-var utils = {
+let utils = {
 
   isApiTest: process.env.NODE_ENV === 'apitest',
+
+  isProd: process.env.NODE_ENV === 'production',
 
   model: U.rest.model,
 
@@ -36,7 +38,7 @@ var utils = {
    * "xxx.xxx.xxx.xxx": [Array] switchs
    */
   privateIpMerge: (switchs, obj) => {
-    var ret = {};
+    let ret = {};
     U._.each(obj, (ips, key) => {
       /**
        * 全部功能的暂时先跳过，后续单独处理
@@ -44,10 +46,10 @@ var utils = {
        */
       if (key === '*') return;
       for (let ip of ips) {
-        ret[ip] = ret[ip] ? ret[ip].concat(switchs[key]) : switchs[key]
+        ret[ip] = ret[ip] ? ret[ip].concat(switchs[key]) : switchs[key];
       }
     });
-    U._.each(ret, (v, k) => ret[k] = U._.uniq(v))
+    U._.each(ret, (v, k) => ret[k] = U._.uniq(v));
     if (obj['*']) {
       for (let ip of obj['*']) {
         ret[ip] = '*';
@@ -58,28 +60,26 @@ var utils = {
 
   /** 一个空函数 */
   noop: () => {
-    return
+    return;
   },
 
   /** 解码base64的图片 */
   decodeBase64Image: (dataString) => {
     if (!dataString) return;
-    let matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/)
+    let matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
     if (!matches) return;
     return {
       type: matches[1],
       data: new Buffer(matches[2], 'base64')
-    }
+    };
   },
 
   mkdirp: (dir) => {
     if (fs.existsSync(dir)) return;
-    var parent = path.dirname(dir)
+    let parent = path.dirname(dir);
     if (!fs.existsSync(parent)) utils.mkdirp(parent);
-    return fs.mkdirSync(dir)
+    return fs.mkdirSync(dir);
   }
 };
 
-utils = Object.assign({}, U.rest.utils, utils, U);
-
-export default utils;
+module.exports = utils = Object.assign({}, U.rest.utils, utils, U);

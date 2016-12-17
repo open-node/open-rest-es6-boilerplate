@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 
-var U     = require('../build/app/lib/utils').default
-  , exec  = require('child_process').exec
-  , db    = require('../build/app/configs/config.apitest').default.db
-  , cache = require('../build/app/configs/config.apitest').default.cache
-  , strfile = __dirname + "/../src/app/configs/table.sql"
-  , datafile = __dirname + "/../src/app/configs/test-data.sql";
+const U         = require('../app/lib/utils');
+const exec      = require('child_process').exec;
+const db        = require('../app/configs/config.apitest').db || {};
+const cache     = require('../app/configs/config.apitest').cache || {};
+const strfile   = `${__dirname}/../app/configs/table.sql`;
+const datafile  = `${__dirname}/../app/configs/test-data.sql`;
+let mysqlAuth   = `mysql -h${db.host} -u${db.user} -P ${db.port}`;
 
-var command = [
-  "mysql -h" + db.host + " -u" + db.user + " -P " + db.port + (db.pass ? " -p'" + db.pass + "' " : ' ') + db.name + " < " + strfile,
-  "mysql -h" + db.host + " -u" + db.user + " -P " + db.port + (db.pass ? " -p'" + db.pass + "' " : ' ') + db.name + " < " + datafile
+if (db.pass) mysqlAuth += ` -p'${db.pass}'`;
+const command = [
+  `${mysqlAuth} ${db.name} < ${strfile}`,
+  `${mysqlAuth} ${db.name} < ${datafile}`
 ].join('\n');
 
 // flushRedis
