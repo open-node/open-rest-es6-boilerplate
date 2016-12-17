@@ -1,43 +1,15 @@
 {
   "name": "open-rest-es6-boilerplate",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "description": "RESTful API framework based on koajs",
   "main": "build/index.js",
-  "babel": {
-    "presets": [
-      "es2015",
-      "stage-0"
-    ],
-    "env": {
-      "apitest": {
-        "plugins": [
-          "istanbul"
-        ]
-      }
-    }
-  },
   "openI18n": {},
   "scripts": {
     "_test": "export NODE_ENV=apitest && ./bin/apitest-init.js && mocha",
-    "test": "nyc --reporter=lcov --reporter=text-summary -x build npm run _test",
-
-    "build-test": "export NODE_ENV=apitest && babel -d ./build ./src -w",
-    "build-prod": "export NODE_ENV=production && babel -d ./build ./src -w",
-    "build-dev": "export NODE_ENV=development && babel -d ./build ./src -w",
-
-    "build-test-nowatch": "export NODE_ENV=apitest && babel -d ./build ./src",
-    "build-prod-nowatch": "export NODE_ENV=production && babel -d ./build ./src",
-    "build-dev-nowatch": "export NODE_ENV=development && babel -d ./build ./src",
-
-    "release": "export NODE_ENV=production && babel -d ./build ./src",
+    "test": "nyc --reporter=lcov --reporter=text-summary npm run _test",
     "locale:read": "find ./src/app -type f | node_modules/.bin/open-i18n read > bin/locale/application.pot && msgmerge -UN --no-wrap ./bin/locale/en.po ./bin/locale/application.pot && msgmerge -UN --no-wrap ./bin/locale/zh.po ./bin/locale/application.pot",
     "locale:write": "./bin/write.js ./bin/locale/zh.po zh && ./bin/write.js ./bin/locale/en.po en",
     "apidocs": "apidoc -i ./src/ -o ./docs/apidocs/ -f '.*\\.js$' -f '.*\\.es$'",
-
-    "start": "NODE_ENV=production && npm run build-prod-nowatch && node build/index.js",
-    "start-dev": "NODE_ENV=development && npm run build-dev-nowatch && node build/index.js",
-    "start-test": " NODE_ENV=apitest && npm run build-test-nowatch && node build/index.js",
-
     "setup": "npm install && npm run build && ./bin/setup"
   },
   "repository": {
@@ -74,25 +46,15 @@
     "open-rest-helper-assert": "^0.6.0",
     "open-rest-helper-getter": "^0.6.0",
     "open-rest-helper-params": "^0.5.0",
-    "open-rest-helper-rest": "^0.6.0",
+    "open-rest-helper-rest": "^0.8.0",
     "prompt": "^1.0.0"
   },
   "devDependencies": {
     "apidoc": "^0.16.1",
-    "babel-cli": "^6.9.0",
-    "babel-plugin-istanbul": "^2.0.1",
-    "babel-polyfill": "^6.9.0",
-    "babel-preset-es2015": "^6.9.0",
-    "babel-preset-stage-0": "^6.5.0",
-    "babel-register": "^6.9.0",
     "mocha": "^3.0.2",
     "nyc": "^8.3.0",
     "codecov": "^1.0.1",
     "restspec": "3.0.0"
-  },
-  "nyc": {
-    "sourceMap": true,
-    "instrument": false
   },
   "apidoc": {
     "name": "open-rest-boilerplate-api-docs",
