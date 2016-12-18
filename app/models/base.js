@@ -3,12 +3,12 @@ module.exports = {
   pagination: {
     maxResults: 10,
     maxResultsLimit: 5000,
-    maxStartIndex: 500000
+    maxStartIndex: 500000,
   },
 
   /** sort 设定 */
   sort: {
     default: 'id',
-    allow: ['id', 'createdAt', 'updatedAt']
-  }
+    allow: ['id', 'createdAt', 'updatedAt'],
+  },
 };
