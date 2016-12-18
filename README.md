@@ -8,7 +8,6 @@ Open-rest es6 boilerplate
 <pre>
   git clone git@github.com:open-node/open-rest-es6-boilerplate.git yourApp
   cd yourApp
-  npm install
   npm run setup
 </pre>
 
