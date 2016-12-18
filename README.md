@@ -30,3 +30,6 @@ Open-rest es6 boilerplate
   * `locale:read` Collect language items
   * `locale:write` Make language packages
   * `setup` install config & db
+
+## eslint airbnb support
+<pre>npm install -g eslint@3.10.0 eslint-config-airbnb@10.0.1 eslint-plugin-import@1.16.0 eslint-plugin-jsx-a11y@2.2.3 eslint-plugin-react@6.4.1</pre>
