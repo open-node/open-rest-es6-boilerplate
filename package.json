@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/open-node/open-rest-es6-boilerplate#readme",
   "dependencies": {
+    "async": "^2.1.4",
     "bunyan": "^1.8.1",
     "commander": "^2.9.0",
     "cron": "^1.1.0",
@@ -47,16 +48,15 @@
     "open-rest-helper-getter": "^0.6.0",
     "open-rest-helper-params": "^0.5.0",
     "open-rest-helper-rest": "^0.8.0",
+    "restspec": "3.0.0",
     "prompt": "^1.0.0"
   },
   "devDependencies": {
     "apidoc": "^0.16.1",
     "codecov": "^1.0.1",
-    "eslint": "^3.12.2",
     "eslint-config-airbnb": "^13.0.0",
     "mocha": "^3.0.2",
-    "nyc": "^10.0.0",
-    "restspec": "3.0.0"
+    "nyc": "^10.0.0"
   },
   "apidoc": {
     "name": "open-rest-boilerplate-api-docs",

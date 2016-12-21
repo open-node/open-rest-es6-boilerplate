@@ -1,164 +1,164 @@
 #! /usr/bin/env node
 
 const prompt = require('prompt');
-const fs     = require('fs');
-const path   = require('path');
-const async  = require('async');
-const rest   = require('open-rest');
+const fs = require('fs');
+const path = require('path');
+const async = require('async');
+const rest = require('open-rest');
 const config = require('../app/configs/base');
-const exec   = require('child_process').exec;
+const exec = require('child_process').exec;
 
 let connection = null;
 
 // Get two properties from the user: username and email
 const schema = {
   properties: {
-    "service.port": {
-      description: "REST API service port",
+    'service.port': {
+      description: 'REST API service port',
       validator: /\d+/,
       default: config.service.port,
-      required: true
+      required: true,
     },
-    "db.host": {
-      description: "MySQL server address",
-      message: "db.host must be required",
+    'db.host': {
+      description: 'MySQL server address',
+      message: 'db.host must be required',
       default: config.db.host,
-      required: true
+      required: true,
     },
-    "db.port": {
-      description: "MySQL server port",
+    'db.port': {
+      description: 'MySQL server port',
       default: config.db.port,
-      message: "db.port must be a number",
-      required: true
+      message: 'db.port must be a number',
+      required: true,
     },
-    "db.user": {
-      description: "MySQL server user",
+    'db.user': {
+      description: 'MySQL server user',
       default: config.db.user,
-      message: "db.user must be required",
-      required: true
+      message: 'db.user must be required',
+      required: true,
     },
-    "db.pass": {
-      description: "MySQL server password",
-      message: "db.pass must be required",
+    'db.pass': {
+      description: 'MySQL server password',
+      message: 'db.pass must be required',
       hidden: true,
-      required: true
+      required: true,
     },
-    "db.name": {
-      description: "MySQL database name, auto create",
+    'db.name': {
+      description: 'MySQL database name, auto create',
       default: config.db.name,
-      message: "db.pass must be required",
-      required: true
+      message: 'db.pass must be required',
+      required: true,
     },
-    "cache.host": {
-      description: "Redis server address",
+    'cache.host': {
+      description: 'Redis server address',
       default: config.cache.host,
-      required: true
+      required: true,
     },
-    "cache.port": {
-      description: "Redis server port",
+    'cache.port': {
+      description: 'Redis server port',
       default: config.cache.port,
-      required: true
+      required: true,
     },
-    "cache.opts.namespace": {
-      description: "Redis server namespace",
+    'cache.opts.namespace': {
+      description: 'Redis server namespace',
       default: config.cache.opts.namespace,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 };
 
-const getNodeEnv = function(callback) {
+const getNodeEnv = (callback) => {
   prompt.get({
-    name: "NODE_ENV",
-    description: "NODE_ENV",
-    message: "NODE_ENV must be a string `apitest`, `development`, `production`",
+    name: 'NODE_ENV',
+    description: 'NODE_ENV',
+    message: 'NODE_ENV must be a string `apitest`, `development`, `production`',
     default: process.env.NODE_ENV || 'development',
-    required: true
+    required: true,
   }, callback);
 };
 
-const getInputs = function(setting, callback) {
-  prompt.get(schema, function(error, result) {
+const getInputs = (setting, callback) => {
+  prompt.get(schema, (error, result) => {
     if (error) return callback(error);
     setting.conf = result;
-    callback(null, setting);
+    return callback(null, setting);
   });
 };
 
-const confExists = function(setting, callback) {
-  let file = `${__dirname}/../app/configs/config.${setting.NODE_ENV}.js`;
+const confExists = (setting, callback) => {
+  const file = `${__dirname}/../app/configs/config.${setting.NODE_ENV}.js`;
   setting.file = file;
   if (!fs.existsSync(file)) return callback(null, setting);
-  prompt.get({
+  return prompt.get({
     name: 'rewrite',
     message: [
       `File \`${path.resolve(file)}\` already exists,`,
-      'To continue the operation will rewrite it. yes or no?'
+      'To continue the operation will rewrite it. yes or no?',
     ].join('\n'),
     validator: /y[es]*|n[o]?/,
     warning: 'Must respond yes or no',
-    default: 'no'
+    default: 'no',
   }, (err, result) => {
     if (err) return callback(err);
-    if ('no' === result.rewrite || 'n' === result.rewrite) {
+    if (['no', 'n'].includes(result.rewrite)) {
       return callback(Error('Config file already exists.'));
     }
-    callback(null, setting);
+    return callback(null, setting);
   });
 };
 
-const dbAuthCheck = function(setting, callback) {
-  let conf = setting.conf;
+const dbAuthCheck = (setting, callback) => {
+  const conf = setting.conf;
   connection = rest.mysql.createConnection({
     host: conf['db.host'],
     user: conf['db.user'],
-    password: conf['db.pass']
+    password: conf['db.pass'],
   });
   try {
     connection.connect();
-  } catch(e) {
+  } catch (e) {
     return callback(e);
   }
   setting.connection = connection;
-  connection.query(`USE ${conf['db.name']}`, (err) => {
+  return connection.query(`USE ${conf['db.name']}`, (err) => {
     // DATABASE non-exists
     if (err) return callback(null, setting);
     // DATABASE already exists
-    prompt.get({
+    return prompt.get({
       name: 'dropdb',
       message: [
         `db\`${conf['db.name']}\` already exists,`,
-        'To continue the operation will drop it. yes or no?'
+        'To continue the operation will drop it. yes or no?',
       ].join('\n'),
       validator: /y[es]*|n[o]?/,
       warning: 'Must respond yes or no',
-      default: 'no'
-    }, (err, result) => {
-      if (err) return callback(err);
-      if ('no' === result.dropdb || 'n' === result.dropdb) {
+      default: 'no',
+    }, (e, result) => {
+      if (e) return callback(e);
+      if (['no', 'n'].includes(result.dropdb)) {
         return callback(Error('Database already exists.'));
       }
-      connection.query(`DROP DATABASE IF EXISTS ${conf['db.name']}`, (err) => {
-        if (err) return callback(err);
-        callback(null, setting);
+      return connection.query(`DROP DATABASE IF EXISTS ${conf['db.name']}`, (error) => {
+        if (error) return callback(error);
+        return callback(null, setting);
       });
     });
   });
 };
 
-const dbCreate = function(setting, callback) {
-  let conf = setting.conf;
-  let sql = [
+const dbCreate = (setting, callback) => {
+  const conf = setting.conf;
+  const sql = [
     `CREATE DATABASE IF NOT EXISTS ${conf['db.name']}`,
-    'DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci'
+    'DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci',
   ].join(' ');
   setting.connection.query(sql, (err) => {
     if (err) return callback(err);
-    callback(null, setting);
+    return callback(null, setting);
   });
 };
 
-const tableCreate = function(setting, callback) {
+const tableCreate = (setting, callback) => {
   const conf = setting.conf;
   const strfile = `${__dirname}/../app/configs/table.sql`;
   const datafile = `${__dirname}/../app/configs/test-data.sql`;
@@ -166,32 +166,32 @@ const tableCreate = function(setting, callback) {
     `mysql -h${conf['db.host']}`,
     `-u${conf['db.user']}`,
     `-P${conf['db.port']}`,
-    `-p'${conf['db.pass']}'`
+    `-p'${conf['db.pass']}'`,
   ].join(' ');
-  let command = [
+  const command = [
     `${mysqlAuth} ${conf['db.name']} < ${strfile}`,
     `${mysqlAuth} ${conf['db.name']} < ${datafile}`,
   ].join('\n');
   exec(command, (error) => {
     if (error) return callback(error);
-    callback(null, setting);
+    return callback(null, setting);
   });
 };
 
-const writeConf = function(setting, callback) {
-  let conf = setting.conf;
-  let contents = ["const config = require('./base');\n"];
-  for (let k in setting.conf) {
+const writeConf = (setting, callback) => {
+  const conf = setting.conf;
+  const contents = ["const config = require('./base');\n"];
+  for (const k of Object.keys(setting.conf)) {
     contents.push(`config.${k} = '${conf[k]}';`);
   }
-  contents.push("\nmodule.exports = config;");
+  contents.push('\nmodule.exports = config;');
 
   try {
     fs.writeFileSync(setting.file, contents.join('\n'));
-  } catch(e) {
+  } catch (e) {
     return callback(e);
   }
-  callback(null, setting);
+  return callback(null, setting);
 };
 
 // Start the prompt
@@ -204,12 +204,12 @@ async.waterfall([
   dbAuthCheck,
   dbCreate,
   tableCreate,
-  writeConf
+  writeConf,
 ], (error) => {
   if (connection && connection.end) connection.end();
   if (error) {
     console.error(error.message);
   } else {
-    console.log("Setup complete.");
+    console.log('Setup complete.');
   }
 });

@@ -1,28 +1,26 @@
 const U = require('../lib/utils');
 
-const PRIVATEIPGUEST = {
+const PRIVATEIPGUEST = Object.freeze({
   id: 0,
-  name: "Private client"
-};
+  name: 'Private client',
+});
 
-const GUEST = {
+const GUEST = Object.freeze({
   id: 0,
-  name: 'Guest'
-};
+  name: 'Guest',
+});
 
 const NOTAUTHORIZEDERROR = U.rest.errors.notAuth();
 
-module.exports = (allowGuestAccessPaths) => {
+module.exports = (guestAllowPaths) => {
   const Auth = U.model('auth');
-  const checkGuestAccess = U._.memoize((apiPath) => {
-    return allowGuestAccessPaths.indexOf(apiPath) > -1;
-  });
+  const checkGuest = U._.memoize(apiPath => guestAllowPaths.has(apiPath));
 
   return (req, res, next) => {
-    let token = U.getToken(req);
+    const token = U.getToken(req);
     if (!token) {
       /** 游客允许访问处理逻辑 */
-      if (checkGuestAccess(`${req.method} ${req.route.path}`)) {
+      if (checkGuest(`${req.method} ${req.route.path}`)) {
         req.user = GUEST;
         return next();
       }
@@ -33,12 +31,12 @@ module.exports = (allowGuestAccessPaths) => {
       return next();
     }
 
-    Auth.readUserByToken(token, (error, user) => {
-      if (error) return next(U.rest.errors.notAuth(error.message));
+    return Auth.readUserByToken(token, (error, user) => {
+      if (error) return next(error);
       req.user = user;
       /** 这个是必须的，open-rest 会有判断这个的逻辑 */
       req.isAdmin = user.role === 'admin';
-      next();
+      return next();
     });
   };
 };

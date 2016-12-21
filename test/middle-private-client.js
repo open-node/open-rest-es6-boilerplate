@@ -1,89 +1,85 @@
-const assert    = require('assert');
-const middle    = require('../app/middle-wares/private-client-check');
+const assert = require('assert');
+const middle = require('../app/middle-wares/private-client-check');
 
-describe('middle private-cient-check', function() {
-
-  describe('#noraml', function() {
-
-    it('token exists', function(done) {
-      let req = {
+describe('middle private-cient-check', () => {
+  describe('#noraml', () => {
+    it('token exists', (done) => {
+      const req = {
         headers: {
-          'x-auth-token': 'Test token'
+          'x-auth-token': 'Test token',
         },
         connection: {
-          remoteAddress: '192.168.199.188'
+          remoteAddress: '192.168.199.188',
         },
-        params: {}
+        params: {},
       };
 
-      let res = {};
+      const res = {};
 
-      let proxyIps = [
-        '127.0.0.1'
+      const proxyIps = [
+        '127.0.0.1',
       ];
 
-      let privateIps = {
-        '192.168.199.188': ['users']
+      const privateIps = {
+        '192.168.199.188': ['users'],
       };
 
-      middle(proxyIps, privateIps)(req, res, function(error) {
+      middle(proxyIps, privateIps)(req, res, (error) => {
         assert.equal(null, error);
         assert.equal(false, req.allowPrivateSwitch('users'));
 
         done();
       });
-
     });
 
-    it('token non-exists', function(done) {
-      let req = {
+    it('token non-exists', (done) => {
+      const req = {
         headers: {},
         connection: {
-          remoteAddress: '192.168.199.188'
+          remoteAddress: '192.168.199.188',
         },
-        params: {}
+        params: {},
       };
 
-      let res = {};
+      const res = {};
 
-      let proxyIps = [
-        '127.0.0.1'
+      const proxyIps = [
+        '127.0.0.1',
       ];
 
-      let privateIps = {
-        '192.168.199.188': ['users']
+      const privateIps = {
+        '192.168.199.188': ['users'],
       };
 
-      middle(proxyIps, privateIps)(req, res, function(error) {
+      middle(proxyIps, privateIps)(req, res, (error) => {
         assert.equal(null, error);
         assert.equal(true, req.allowPrivateSwitch('users'));
         assert.equal(false, req.allowPrivateSwitch('user'));
 
         done();
       });
-
     });
 
-    it('token non-exists, switchs unset', function(done) {
-      let req = {
+    it('token non-exists, switchs unset', (done) => {
+      const req = {
         headers: {},
         connection: {
-          remoteAddress: '192.168.199.188'
+          remoteAddress: '192.168.199.188',
         },
-        params: {}
+        params: {},
       };
 
-      let res = {};
+      const res = {};
 
-      let proxyIps = [
-        '127.0.0.1'
+      const proxyIps = [
+        '127.0.0.1',
       ];
 
-      let privateIps = {
-        '192.168.199.188': undefined
+      const privateIps = {
+        '192.168.199.188': undefined,
       };
 
-      middle(proxyIps, privateIps)(req, res, function(error) {
+      middle(proxyIps, privateIps)(req, res, (error) => {
         assert.equal(null, error);
         assert.equal(false, req.allowPrivateSwitch('users'));
         assert.equal(false, req.allowPrivateSwitch('user'));
@@ -96,26 +92,26 @@ describe('middle private-cient-check', function() {
       });
     });
 
-    it('token non-exists, switchs *', function(done) {
-      let req = {
+    it('token non-exists, switchs *', (done) => {
+      const req = {
         headers: {},
         connection: {
-          remoteAddress: '192.168.199.188'
+          remoteAddress: '192.168.199.188',
         },
-        params: {}
+        params: {},
       };
 
-      let res = {};
+      const res = {};
 
-      let proxyIps = [
-        '127.0.0.1'
+      const proxyIps = [
+        '127.0.0.1',
       ];
 
-      let privateIps = {
-        '192.168.199.188': '*'
+      const privateIps = {
+        '192.168.199.188': '*',
       };
 
-      middle(proxyIps, privateIps)(req, res, function(error) {
+      middle(proxyIps, privateIps)(req, res, (error) => {
         assert.equal(null, error);
         assert.equal(true, req.allowPrivateSwitch('users'));
         assert.equal(true, req.allowPrivateSwitch('user'));
@@ -126,9 +122,6 @@ describe('middle private-cient-check', function() {
 
         done();
       });
-
     });
-
   });
-
 });

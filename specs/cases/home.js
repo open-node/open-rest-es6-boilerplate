@@ -5,17 +5,17 @@ module.exports = [{
     Status: 403,
     JSON: {
       code: 'NotAuthorized',
-      message: 'Not authorized error.'
-    }
-  }
+      message: 'Not authorized error.',
+    },
+  },
 }, {
   name: '普通用户可以访问 /',
   uri: '/',
   headers: {
     'X-Real-IP': '199.199.0.199',
-    'X-Auth-Token': 'MOCK::1'
+    'X-Auth-Token': 'MOCK::1',
   },
   expects: {
-    Status: 200
-  }
+    Status: 200,
+  },
 }];

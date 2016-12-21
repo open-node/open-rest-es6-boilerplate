@@ -4,14 +4,14 @@ module.exports = {
   name: 'openrest',
   encode: {
     set: 'utf8',
-    collation: 'utf8_general_ci'
+    collation: 'utf8_general_ci',
   },
   user: 'root',
   pass: '^7s*@asf21home($YUw',
   dialect: 'mysql',
   dialectOptions: {
     /** 支持大数的计算 */
-    supportBigNumbers: true
+    supportBigNumbers: true,
   },
   logging: false,
   define: {
@@ -20,13 +20,13 @@ module.exports = {
     syncOnAssociation: false,
     charset: 'utf8',
     collate: 'utf8_general_ci',
-    engine: 'InnoDB'
+    engine: 'InnoDB',
   },
   syncOnAssociation: true,
   pool: {
     min: 2,
     max: 10,
     /** 单位毫秒 */
-    idle: 300 * 1000
-  }
+    idle: 300 * 1000,
+  },
 };

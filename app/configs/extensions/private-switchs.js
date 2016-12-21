@@ -8,6 +8,6 @@
  */
 module.exports = {
   users: [
-    "GET /users"
-  ]
+    'GET /users',
+  ],
 };

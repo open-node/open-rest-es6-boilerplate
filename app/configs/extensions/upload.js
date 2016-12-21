@@ -15,5 +15,5 @@ module.exports = {
   blackList: ['.php'],
 
   /** 文件下载路径 */
-  accessUrl: './access-files'
+  accessUrl: './access-files',
 };

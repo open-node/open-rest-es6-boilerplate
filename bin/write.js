@@ -1,22 +1,20 @@
 #!/usr/bin/env node
 
-var _           = require("lodash")
-  , fs          = require("fs");
+const fs = require('fs');
 
-var po2json = function(str) {
-  var translate = {};
-  var regxp = /\nmsgid "([^\n]+)"\nmsgstr "([^\n]+)"/g;
-  str.replace(regxp, function(txt, key, value) {
+const po2json = (str) => {
+  const translate = {};
+  const regxp = /\nmsgid "([^\n]+)"\nmsgstr "([^\n]+)"/g;
+  str.replace(regxp, (txt, key, value) => {
     translate[key] = value;
   });
   return JSON.stringify(translate, null, 2);
 };
 
-var write = function(poFile, lang, destFile) {
-  if (!destFile) destFile = __dirname + '/../locale/' + lang + '.json';
-  var str = fs.readFileSync(poFile).toString();
-  var json = po2json(str);
-  fs.writeFileSync(destFile, json);
+const write = (po, lang, dest = `${__dirname}/../locale/${lang}.json`) => {
+  const str = fs.readFileSync(po).toString();
+  const json = po2json(str);
+  fs.writeFileSync(dest, json);
 };
 
-write.apply(null, process.argv.slice(2));
+write.apply(null, ...process.argv.slice(2));

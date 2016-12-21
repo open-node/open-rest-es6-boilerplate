@@ -1,23 +1,23 @@
-const U       = require('../lib/utils');
-const config  = require('../configs');
+const U = require('../lib/utils');
+const config = require('../configs');
 
-const sayHi = (name, service, ip, now) => {
-  return "Hello " + name + ", This is " + service + ", Your ip: " + ip + ", Now: " + now + ".";
-};
+const sayHi = (name, service, ip, now) => (
+  `Hello ${name}, This is ${service}, Your ip: ${ip}, Now: ${now}.`
+);
 
 const service = config.service.name;
 
 const index = (req, res, next) => {
-  let userName = req.user.name || req.user.username || 'guest';
-  let ip = [
+  const userName = req.user.name || req.user.username || 'guest';
+  const ip = [
     req._clientIp,
     req._realIp,
-    req._remoteIp
+    req._remoteIp,
   ].join(' - ');
-  let hi = sayHi(userName, service, ip, new Date);
-  let switchs = req.privateSwitchs;
+  const hi = sayHi(userName, service, ip, new Date());
+  const switchs = req.privateSwitchs;
   if (switchs) {
-    let apis = U._.chain(config.privateSwitchs)
+    const apis = U._.chain(config.privateSwitchs)
       .filter((x, k) => ((switchs === '*') || (switchs.indexOf(k) > -1)) && x)
       .compact()
       .flatten()
@@ -29,4 +29,4 @@ const index = (req, res, next) => {
   next();
 };
 
-module.exports = {index};
+module.exports = { index };

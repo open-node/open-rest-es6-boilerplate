@@ -34,6 +34,8 @@ let utils = {
 
   model: U.rest.model,
 
+  hasOwnProperty: Object.prototype.hasOwnProperty,
+
   /**
    * 将私有ip和权限组的对应关系合并之后转换成需要的格式
    * "xxx.xxx.xxx.xxx": [Array] switchs

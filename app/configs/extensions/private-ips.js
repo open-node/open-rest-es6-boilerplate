@@ -6,7 +6,7 @@ const utils = require('../../lib/utils');
  * groupName: [switch1, switch2]
  */
 const switchs = {
-  local: ["users"]
+  local: ['users'],
 };
 
 /** groupName: [ip1, ip2] */
@@ -16,6 +16,6 @@ module.exports = utils.privateIpMerge(switchs, {
    * @zhaoxiongfei
    */
   local: [
-    "192.168.199.188"
-  ]
+    '192.168.199.188',
+  ],
 });

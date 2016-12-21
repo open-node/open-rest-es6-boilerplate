@@ -19,7 +19,8 @@
   },
   "rules": {
     "react/require-extension": "off",
-    "indent": [ "error", 2 ],
+    "indent": ["error", 2],
+    "no-param-reassign": ["error", {"props": false}],
     "no-console": 0,
     "no-debugger": 1,
     "no-var": 1,

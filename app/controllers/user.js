@@ -1,9 +1,9 @@
-const U       = require('../lib/utils');
-const helper  = require('./helper');
+const U = require('../lib/utils');
+const helper = require('./helper');
 
 const User = U.model('user');
 const CHECK_PASS_COLS = [
-  'email', 'password'
+  'email', 'password',
 ];
 
 /**
@@ -33,7 +33,7 @@ const CHECK_PASS_COLS = [
  * @apiVersion 1.0.0
  */
 const session = [
-  helper.user.session()
+  helper.user.session(),
 ];
 
 /**
@@ -66,7 +66,7 @@ const session = [
  */
 const login = [
   helper.user.login(),
-  helper.user.session(201)
+  helper.user.session(201),
 ];
 
 /**
@@ -80,7 +80,7 @@ const login = [
  * @apiVersion 1.0.0
  */
 const logout = [
-  helper.user.logout()
+  helper.user.logout(),
 ];
 
 /**
@@ -111,7 +111,7 @@ const logout = [
  */
 const list = [
   helper.checker.sysAdmin(),
-  helper.rest.list(User)
+  helper.rest.list(User),
 ];
 
 /**
@@ -148,10 +148,10 @@ const modify = [
   helper.assert.exists('hooks.user'),
   [
     helper.checker.ownSelf('id', 'user'),
-    helper.checker.sysAdmin()
+    helper.checker.sysAdmin(),
   ],
   helper.user.checkPass(CHECK_PASS_COLS, true, true),
-  helper.rest.modify.Model(User).hook('user').exec()
+  helper.rest.modify(User, 'user'),
 ];
 
 /**
@@ -168,7 +168,7 @@ const remove = [
   helper.checker.sysAdmin(),
   helper.getter(User, 'user'),
   helper.assert.exists('hooks.user'),
-  helper.rest.remove.hook('user').exec()
+  helper.rest.remove.hook('user').exec(),
 ];
 
 /**
@@ -197,7 +197,7 @@ const remove = [
 const detail = [
   helper.getter(User, 'user'),
   helper.assert.exists('hooks.user'),
-  helper.rest.detail('user')
+  helper.rest.detail('user'),
 ];
 
 /**
@@ -231,10 +231,9 @@ const detail = [
  */
 const add = [
   helper.checker.sysAdmin(),
-  helper.rest.add(User)
+  helper.rest.add(User),
 ];
 
 module.exports = {
-  session, login, logout,
-  list, detail, modify, remove, add
+  session, login, logout, list, detail, modify, remove, add,
 };
