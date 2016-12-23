@@ -143,13 +143,13 @@ module.exports = (sequelize) => {
     classMethods: {
       checkPass: (req, email, password, callback) => {
         const where = { email };
-        User.findOne({ where }).catch(callback).then((user) => {
+        User.findOne({ where }).then((user) => {
           if (!user) return callback(CHECK_PASS_ERROR);
           if (!user.checkPass(password)) return callback(CHECK_PASS_ERROR);
           if (user.status === 'disabled') return callback(USER_STATUS_ERROR);
           if (user.isDelete === 'yes') return callback(USER_DELETED_ERROR);
           return callback(null, user);
-        });
+        }).catch(callback);
       },
 
       /** 计算头像路径 */

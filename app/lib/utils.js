@@ -13,6 +13,7 @@ U._ = require('lodash');
 U.cached = require('open-cache');
 U.md5 = require('md5');
 U.moment = require('moment');
+U.async = require('async');
 U.path = require('path');
 U.fs = require('fs');
 U.openRestAccessLog = require('open-rest-access-log');

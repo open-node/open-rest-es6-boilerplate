@@ -8,17 +8,17 @@ const USER_STATUS_ERROR = Error('User had disabled.');
 const USER_DELETED_ERROR = Error('User had deleted.');
 
 let readUserByToken = (token, callback) => {
-  U.model('auth').findByToken(token).catch(callback).then((auth) => {
+  U.model('auth').findByToken(token).then((auth) => {
     if (!auth) return callback(TOKEN_ERROR);
-    return U.model('user').findById(auth.creatorId).catch(callback).then((user) => {
+    return U.model('user').findById(auth.creatorId).then((user) => {
       if (!user) return callback(USER_NO_EXISTS);
       if (user.status === 'disabled') return callback(USER_STATUS_ERROR);
       if (user.isDelete === 'yes') return callback(USER_DELETED_ERROR);
       const json = user.toJSON();
       json.auth = auth.toJSON();
       return callback(null, json);
-    });
-  });
+    }).catch(callback);
+  }).catch(callback);
 };
 
 /** open-cache 是否初始化了 */

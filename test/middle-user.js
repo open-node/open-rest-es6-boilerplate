@@ -26,7 +26,7 @@ describe('middle user', () => {
         'GET /users',
       ];
 
-      middle(allowGuestAccessPaths)(req, res, (error) => {
+      middle(new Set(allowGuestAccessPaths))(req, res, (error) => {
         assert.ok(error);
         assert.ok(error instanceof Error);
         assert.deepEqual({
@@ -65,7 +65,7 @@ describe('middle user', () => {
         'GET /users',
       ];
 
-      middle(allowGuestAccessPaths)(req, res, (error) => {
+      middle(new Set(allowGuestAccessPaths))(req, res, (error) => {
         assert.equal(null, error);
         assert.deepEqual({
           id: 0,

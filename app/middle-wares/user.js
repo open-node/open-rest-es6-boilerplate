@@ -1,3 +1,4 @@
+const errors = require('../lib/errors');
 const U = require('../lib/utils');
 
 const PRIVATEIPGUEST = Object.freeze({
@@ -32,7 +33,7 @@ module.exports = (guestAllowPaths) => {
     }
 
     return Auth.readUserByToken(token, (error, user) => {
-      if (error) return next(error);
+      if (error) return next(errors.notAuth(error.message));
       req.user = user;
       /** 这个是必须的，open-rest 会有判断这个的逻辑 */
       req.isAdmin = user.role === 'admin';

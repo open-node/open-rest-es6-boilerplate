@@ -1,5 +1,6 @@
 const assert = require('assert');
 const rest = require('open-rest');
+const helperRest = require('open-rest-helper-rest');
 const U = require('../app/lib/utils');
 const user = require('../app/controllers/helper/user');
 
@@ -90,9 +91,9 @@ models.auth.readUserByToken = {
   removeKey: false,
 };
 
-models.auth.findOne = () => (
-  new Promise((resolve) => setTimeout(resolve, 10))
-);
+models.auth.findOne = () => new Promise((resolve) => setTimeout(resolve, 10));
+
+helperRest(rest);
 
 describe('helper.user', () => {
   describe('#logout', () => {
@@ -494,7 +495,7 @@ describe('helper.user', () => {
     it([
       'req.hooks.user non-exists User.findOne success,',
       'user non-exists, name exists, beforeAdd error',
-    ], (done) => {
+    ].join(' '), (done) => {
       const uModel = U.model;
       U.model = (name) => models[name];
       const req = {
@@ -509,10 +510,10 @@ describe('helper.user', () => {
           assert.equal('exists', value);
         },
       };
-      const findOrCreate = user.findOrCreate('user');
       models.user.findOne = findOnePromiseSuccess(null);
       U.rest.helper.rest = {};
       U.rest.helper.rest.beforeAdd = () => (r, s, next) => next(Error('Before add error'));
+      const findOrCreate = user.findOrCreate('user');
       findOrCreate(req, res, (error) => {
         assert.ok(error);
         assert.ok(error instanceof Error);
@@ -526,7 +527,7 @@ describe('helper.user', () => {
     it([
       'req.hooks.user non-exists User.findOne success,',
       'user non-exists, name non-exists, beforeAdd success',
-    ], (done) => {
+    ].join(' '), (done) => {
       const uModel = U.model;
       U.model = (name) => models[name];
       const req = {
@@ -541,7 +542,6 @@ describe('helper.user', () => {
           assert.equal('added', value);
         },
       };
-      const findOrCreate = user.findOrCreate('user');
       models.user.findOne = findOnePromiseSuccess(null);
       U.rest.helper.rest = {};
       U.rest.helper.rest.beforeAdd = () => (
@@ -553,6 +553,7 @@ describe('helper.user', () => {
           return next();
         }
       );
+      const findOrCreate = user.findOrCreate('user');
       findOrCreate(req, res, (error) => {
         assert.equal(null, error);
         assert.equal(9999, req.params.userId);
@@ -585,7 +586,6 @@ describe('helper.user', () => {
           assert.equal('added', value);
         },
       };
-      const findOrCreate = user.findOrCreate('user');
       models.user.findOne = findOnePromiseSuccess(null);
       U.rest.helper.rest = {};
       U.rest.helper.rest.beforeAdd = () => (
@@ -597,6 +597,7 @@ describe('helper.user', () => {
           return next();
         }
       );
+      const findOrCreate = user.findOrCreate('user');
 
       findOrCreate(req, res, (error) => {
         assert.equal(null, error);

@@ -48,7 +48,7 @@ const login = () => {
       (user, callback) => Auth.addAuth(user, req._realIp, callback),
       (auth, callback) => Auth.readUserByToken(auth.token, callback),
     ], (error, user) => {
-      if (error) return next(error);
+      if (error) return next(errors.notAuth(error.message));
       req.user = user;
       return next();
     });
@@ -82,7 +82,7 @@ const checkPass = (cols, ignoreAdmin, modifyUser) => {
     if (!origPass) return next(errors.notAuth());
     return User.checkPass(req, user.email, origPass, (error) => {
       if (!error) return next();
-      return next(error);
+      return next(errors.notAuth(error.message));
     });
   };
 };
@@ -97,7 +97,7 @@ const findOrCreate = (hook) => {
     const { email, name } = req.params;
     if (req.hooks[hook]) return next();
     if (!email) return next(emailMissing);
-    return User.findOne({ where: { email } }).catch(next).then((user) => {
+    return User.findOne({ where: { email } }).then((user) => {
       if (user) {
         req.params.userId = user.id;
         req.hooks[hook] = user;
@@ -111,7 +111,7 @@ const findOrCreate = (hook) => {
         res.header('X-Content-System-User', 'added');
         return next();
       });
-    });
+    }).catch(next);
   };
 };
 
