@@ -12,6 +12,7 @@ Open-rest es6 boilerplate
 </pre>
 
 ## Feature list
+- [x] [eslint airbnb](https://github.com/airbnb/javascript)
 - [x] [open-rest@7.0.1](https://github.com/open-node/open-rest)
 - [x] [open-i18n@0.4.0](https://github.com/open-node/open-i18n)
 - [x] [open-rest-access-log@0.1.0](https://github.com/open-node/open-rest-access-log)
