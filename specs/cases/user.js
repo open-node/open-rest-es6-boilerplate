@@ -1,5 +1,9 @@
 const U = require('../../app/lib/utils');
 
+const imageData = 'R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=';
+const base64image = `data:image/gif;base64,${imageData}`;
+const unBase64image = 'data:image/gif;base64,';
+
 module.exports = [{
   name: '管理员添加一个用户',
   uri: '/users',
@@ -92,6 +96,69 @@ module.exports = [{
     JSON: {
       code: 'ResourceNotFound',
       message: 'Resource not found.',
+    },
+  },
+}, {
+  name: '普通用户可以设置头像',
+  uri: '/users/2',
+  verb: 'put',
+  headers: {
+    'X-Auth-Token': 'MOCK::2',
+  },
+  data: {
+    avatar: base64image,
+  },
+  expects: {
+    Status: 200,
+    JSON: {
+      id: 2,
+      avatar: (v, assert) => {
+        const avatarPath = v.substr(9);
+        assert.equal(0, v.indexOf('/_avatar/'));
+        assert.ok(U.fs.existsSync(`${__dirname}/../../avatar/${avatarPath}`));
+      },
+    },
+  },
+}, {
+  name: '普通用户再次设置头像',
+  uri: '/users/2',
+  verb: 'put',
+  headers: {
+    'X-Auth-Token': 'MOCK::2',
+  },
+  data: {
+    avatar: base64image,
+  },
+  expects: {
+    Status: 200,
+    JSON: {
+      id: 2,
+      avatar: (v, assert) => {
+        const avatarPath = v.substr(9);
+        assert.equal(0, v.indexOf('/_avatar/'));
+        assert.ok(U.fs.existsSync(`${__dirname}/../../avatar/${avatarPath}`));
+      },
+    },
+  },
+}, {
+  name: '普通用户再次设置头像, 图片不存在',
+  uri: '/users/2',
+  verb: 'put',
+  headers: {
+    'X-Auth-Token': 'MOCK::2',
+  },
+  data: {
+    avatar: unBase64image,
+  },
+  expects: {
+    Status: 200,
+    JSON: {
+      id: 2,
+      avatar: (v, assert) => {
+        const avatarPath = v.substr(9);
+        assert.equal(0, v.indexOf('/_avatar/'));
+        assert.ok(U.fs.existsSync(`${__dirname}/../../avatar/${avatarPath}`));
+      },
     },
   },
 }];

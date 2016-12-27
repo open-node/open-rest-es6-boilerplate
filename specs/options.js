@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const cases = require('./cases');
 
 module.exports = (config) => ({
@@ -6,12 +5,6 @@ module.exports = (config) => ({
   urlRoot: `http://127.0.0.1:${config.service.port}`,
   cases,
   hooks: {
-    done() {
-      _.delay(() => {
-        console.log('Done at: %s', new Date());
-        process.exit();
-      }, 100);
-    },
   },
   globals: {
     request: {
