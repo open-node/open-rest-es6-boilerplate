@@ -1,6 +1,6 @@
 {
   "name": "open-rest-es6-boilerplate",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "RESTful API framework based on koajs",
   "main": "build/index.js",
   "openI18n": {},
@@ -43,12 +43,9 @@
     "on-finished": "^2.3.0",
     "open-cache": "^0.4.0",
     "open-i18n": "^0.4.0",
-    "open-rest": "^7.0.1",
-    "open-rest-access-log": "^0.1.0",
-    "open-rest-helper-assert": "^0.6.0",
-    "open-rest-helper-getter": "^0.6.0",
-    "open-rest-helper-params": "^0.5.0",
-    "open-rest-helper-rest": "^0.8.0",
+    "open-rest": "8.0.0-rc1",
+    "open-rest-access-log": "0.1.0",
+    "open-rest-with-mysql": "0.0.7",
     "restspec": "3.0.0",
     "prompt": "^1.0.0"
   },

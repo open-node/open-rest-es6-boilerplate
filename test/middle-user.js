@@ -1,6 +1,9 @@
 const assert = require('assert');
 const U = require('../app/lib/utils');
 const middle = require('../app/middle-wares/user');
+const openRestWithMysql = require('open-rest-with-mysql');
+
+U.model = openRestWithMysql(U.rest);
 
 describe('middle user', () => {
   describe('#noraml', () => {

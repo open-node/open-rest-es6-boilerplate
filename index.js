@@ -2,7 +2,9 @@
 
 const U = require('./app/lib/utils');
 const config = require('./app/configs');
+const routes = require('./app/routes');
 
+const requireModel = require;
 const cache = config.cache || {};
 U.cached.init(cache.port, cache.host, cache.opts);
 
@@ -10,13 +12,15 @@ if (U.isProd) {
   U.rest.utils.logger = U.logger = U.bunyan.createLogger(config.logger);
 }
 
-// open-rest 插件
-require('open-rest-helper-getter')(U.rest);
-require('open-rest-helper-assert')(U.rest);
-require('open-rest-helper-rest')(U.rest);
-require('open-rest-helper-params')(U.rest);
+// 初始化Model，且将获取Model定义的函数注册到 U 上面
+U.model = U.openRestWithMysql(U.rest, `${__dirname}/app/models`, config.db);
 
-U.rest(`${__dirname}/app`, (error) => {
+const middleWares = requireModel('./app/middle-wares');
+const controllers = U.getModules(`${__dirname}/app/controllers`, 'js');
+const service = config.service;
+
+const server = U.rest({ routes, controllers, middleWares, service });
+server.listen(service.port, service.ip, (error) => {
   if (error) throw Error;
-  console.log('service startedAt: %s', new Date());
+  U.logger.info('service startedAt: %s', new Date());
 });
