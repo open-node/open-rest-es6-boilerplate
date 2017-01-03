@@ -8,7 +8,6 @@ const rest = require('open-rest');
 const { mysql } = require('open-rest-with-mysql');
 const config = require('../app/configs/base');
 const exec = require('child_process').exec;
-const { mysql } = require('open-rest-with-mysql');
 
 let connection = null;
 
