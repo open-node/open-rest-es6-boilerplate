@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 const Restspec = require('restspec');
-const config = require('../app/configs/config.apitest');
+const config = require('../app/configs/config.test');
 const options = require('./options');
 
 module.exports = (done) => {

@@ -68,7 +68,7 @@ module.exports = (sequelize) => {
     classMethods: {
       findByToken(token) {
         /** 常规模式，到 auth 表根据 token 查询 */
-        if (!(U.isApiTest && (token.substr(0, 6) === 'MOCK::'))) {
+        if (!(U.isTest && (token.substr(0, 6) === 'MOCK::'))) {
           return this.findOne({
             where: {
               token,

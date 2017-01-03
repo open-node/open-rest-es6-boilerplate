@@ -2,23 +2,26 @@
 
 const U = require('./app/lib/utils');
 const config = require('./app/configs');
-const routes = require('./app/routes');
+const getter = require('open-rest-helper-getter');
+const assert = require('open-rest-helper-assert');
+const rest = require('open-rest-helper-rest');
+const params = require('open-rest-helper-params');
 
 const cache = config.cache || {};
 U.cached.init(cache.port, cache.host, cache.opts);
 
 if (U.isProd) U.rest.utils.logger = U.logger = U.bunyan.createLogger(config.logger);
 
-// 初始化Model，且将获取Model定义的函数注册到 U 上面
-U.model = U.openRestWithMysql(U.rest, `${__dirname}/app/models`, config.db);
-
-const middleWares = require('./app/middle-wares');
-
-const controllers = U.getModules(`${__dirname}/app/controllers`, 'js');
-const service = config.service;
-
-const server = U.rest({ routes, controllers, middleWares, service });
-server.listen(service.port, service.ip, (error) => {
-  if (error) throw Error;
-  U.logger.info('service startedAt: %s', new Date());
-});
+U.rest
+ .plugin(U.openRestWithMysql)
+ .plugin(getter, assert, rest, params)
+ .plugin(() => {
+   U.model = U.rest.utils.model;
+ })
+ .start(`${__dirname}/app`, (error) => {
+   if (error) {
+     U.logger.error(error);
+     process.exit();
+   }
+   U.logger.info(`Service started at: ${new Date()}`);
+ });

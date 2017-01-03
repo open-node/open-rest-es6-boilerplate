@@ -2,8 +2,14 @@ const assert = require('assert');
 const U = require('../app/lib/utils');
 const openRestWithMysql = require('open-rest-with-mysql');
 const user = require('../app/controllers/helper/user');
+const getter = require('open-rest-helper-getter');
+const rest = require('open-rest-helper-rest');
+const params = require('open-rest-helper-params');
 
 U.model = openRestWithMysql(U.rest);
+getter(U.rest);
+rest(U.rest);
+params(U.rest);
 
 const Sequelize = openRestWithMysql.Sequelize;
 

@@ -2,7 +2,7 @@
 
 const U = require('../app/lib/utils');
 const { exec } = require('child_process');
-const config = require('../app/configs/config.apitest');
+const config = require('../app/configs/config.test');
 
 const strfile = `${__dirname}/../app/configs/table.sql`;
 const datafile = `${__dirname}/../app/configs/test-data.sql`;

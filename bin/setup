@@ -7,6 +7,7 @@ const async = require('async');
 const rest = require('open-rest');
 const config = require('../app/configs/base');
 const exec = require('child_process').exec;
+const { mysql } = require('open-rest-with-mysql');
 
 let connection = null;
 
@@ -71,7 +72,7 @@ const getNodeEnv = (callback) => {
   prompt.get({
     name: 'NODE_ENV',
     description: 'NODE_ENV',
-    message: 'NODE_ENV must be a string `apitest`, `development`, `production`',
+    message: 'NODE_ENV must be a string `test`, `development`, `production`',
     default: process.env.NODE_ENV || 'development',
     required: true,
   }, callback);
@@ -109,7 +110,7 @@ const confExists = (setting, callback) => {
 
 const dbAuthCheck = (setting, callback) => {
   const conf = setting.conf;
-  connection = rest.mysql.createConnection({
+  connection = mysql.createConnection({
     host: conf['db.host'],
     user: conf['db.user'],
     password: conf['db.pass'],

@@ -22,10 +22,6 @@ U.onFinished = require('on-finished');
 
 let utils = {
 
-  isApiTest: process.env.NODE_ENV === 'apitest',
-
-  isProd: process.env.NODE_ENV === 'production',
-
   model: U.rest.model,
 
   hasOwnProperty: Object.prototype.hasOwnProperty,
