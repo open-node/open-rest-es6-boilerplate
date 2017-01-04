@@ -11,6 +11,14 @@ module.exports = {
     version: '0.0.1',
     ip: '127.0.0.1',
     port: 9988,
+    /** 路由相关设置 */
+    route: {
+      /**
+       * 是否提供 apis 查询，如果提供这里设置为 apis 的请求路径
+       * 不设置此属性，或者设置为 null 则不提供 apis 的查询服务
+       */
+      apis: '/apis',
+    },
   },
 
   logger: {
@@ -74,15 +82,6 @@ module.exports = {
 
   /** 头像相关设定 */
   avatar,
-
-  /** 路由相关设置 */
-  route: {
-    /**
-     * 是否提供 apis 查询，如果提供这里设置为 apis 的请求路径
-     * 不设置此属性，或者设置为 null 则不提供 apis 的查询服务
-     */
-    apis: '/apis',
-  },
 
   /** accessLog 路径 */
   accessLog: `${__dirname}/../../storage/logs/access.log`,
