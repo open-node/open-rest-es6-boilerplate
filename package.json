@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/open-rest/open-rest-es6-boilerplate.git"
+    "url": "git+https://github.com/open-node/open-rest-es6-boilerplate.git"
   },
   "keywords": [
     "RESTful",
