@@ -2,7 +2,7 @@
   "name": "open-rest-es6-boilerplate",
   "version": "0.7.0",
   "description": "RESTful API boilerplate based on open-rest with mysql",
-  "main": "build/index.js",
+  "main": "index.js",
   "openI18n": {},
   "scripts": {
     "_test": "export NODE_ENV=test && ./bin/test-init.js && mocha",
