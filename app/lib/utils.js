@@ -1,3 +1,4 @@
+const pkg = require('../../package');
 /**
  * 以下是项目所依赖的库包
  * 第三方库包禁止直接使用
@@ -7,6 +8,12 @@
  * 3. 未完待续
  */
 const U = {};
+Object.keys(pkg.dependencies).forEach((k) => {
+  /** 包名的中划线转成驼峰，方便通过点(.)来操作 */
+  /* eslint-disable global-require, import/no-dynamic-require */
+  U[k.replace(/(-\w)/g, m => m[1].toUpperCase())] = require(k);
+  /* eslint-enable global-require, import/no-dynamic-require */
+});
 
 U.rest = require('open-rest');
 U._ = require('lodash');
